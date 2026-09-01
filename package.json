@@ -1,0 +1,15 @@
+{
+  "name": "aether",
+  "version": "1.0.0",
+  "description": "Advanced free LLM CLI agent with multi-provider routing, failover, and agentic tool use.",
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": { "aether": "src/index.ts" },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx src/index.ts",
+    "build": "tsc"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {}
+}
