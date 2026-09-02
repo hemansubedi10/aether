@@ -1,4 +1,4 @@
-﻿import * as path from "node:path";
+import * as path from "node:path";
 import * as os from "node:os";
 import { RouterEngine } from "./router-engine.js";
 import { HealthTracker } from "./health.js";
@@ -20,6 +20,7 @@ import { Settings } from "./settings.js";
 import { createTUI } from "./tui.js";
 import type { ChatChunk, Message, ToolDef } from "./types.js";
 import { FreeRouterClient, type ChatResult } from "./client.js";
+import { KeyManager } from "./keys.js";
 
 export async function runChat(
   messages: Message[],
@@ -27,7 +28,7 @@ export async function runChat(
   opts?: { temperature?: number; maxTokens?: number; signal?: AbortSignal }
 ): Promise<{ text: string; toolCalls: any[]; usage?: { input_tokens: number; output_tokens: number } }> {
   const cfg = getConfig();
-  const engine = new RouterEngine();
+  const engine = new RouterEngine(undefined, undefined, KeyManager.instance());
   let text = "";
   const toolCalls: any[] = [];
   let usage: ChatChunk["usage"];
@@ -61,13 +62,15 @@ function makeRouterAdapter(engine: RouterEngine) {
     listAllModels: () => engine.listFreeModels(),
     healthAll: () => engine.healthAll(),
     resetHealth: () => engine.resetHealth(),
+    keys: engine.keys,
+    setKey: (name: string, key: string) => engine.setKey(name, key),
   };
   return adapter;
 }
 
 export function createAgent(rootDir: string = process.cwd()): Agent {
   const cfg = getConfig();
-  const engine = new RouterEngine();
+  const engine = new RouterEngine(undefined, undefined, KeyManager.instance());
   const router = makeRouterAdapter(engine);
   const registry = new ToolRegistry();
   const factories = [
@@ -152,7 +155,7 @@ export function createAgentFromServer(baseURL?: string): Agent {
 }
 export function createTUIContext(rootDir: string = process.cwd()) {
   const cfg = getConfig();
-  const engine = new RouterEngine();
+  const engine = new RouterEngine(undefined, undefined, KeyManager.instance());
   const router = makeRouterAdapter(engine);
   const registry = new ToolRegistry();
   for (const make of [makeReadFileTool, makeWriteFileTool, makeEditFileTool, makeListDirTool, makeBashTool, makeGlobTool, makeGrepTool, makeWebSearchTool, makeVisionTool, makeGitTool]) {
@@ -170,7 +173,7 @@ export function createTUIContext(rootDir: string = process.cwd()) {
   return { agent, router, session, arena, costTracker, settings, tui };
 }
 
-export { RouterEngine, HealthTracker, getConfig, Agent, ToolRegistry, Session, Arena, createTUI, Memory, ModeManager, CostTracker, GitTool, Checkpoint, Skills, FreeRouterClient };
+export { RouterEngine, HealthTracker, KeyManager, getConfig, Agent, ToolRegistry, Session, Arena, createTUI, Memory, ModeManager, CostTracker, GitTool, Checkpoint, Skills, FreeRouterClient };
 import { GitTool } from "./git.js";
 import { Checkpoint } from "./checkpoint.js";
 import { Skills } from "./skills.js";

@@ -1,9 +1,3 @@
-_   _      _      __  __  ___
- | \ | |    / \    |  \/  |/ _ \
- |  \| |   / _ \   | |\/| | | | |
- | |\  |  / ___ \  | |  | | |_| |
- |_| \_| /_/   \_\ |_|  |_|\___/
-
 # Aether
 
 <p align="center"><img src="assets/aether-banner.svg" alt="Aether Banner" width="100%"></p>
@@ -31,11 +25,11 @@ Aether is a TypeScript CLI agent that turns your terminal into an autonomous cod
 
 | Feature | Description |
 |---------|-------------|
-| 🔀 **Multi-provider routing** | One unified interface over Ollama, OpenRouter free-tier, and any OpenAI-compatible endpoint. Switch with `/model` and `/provider`. |
+| ❤️ **Multi-provider routing** | One unified interface over Ollama, OpenRouter free-tier, and any OpenAI-compatible endpoint. Switch with `/model` and `/provider`. |
 | ⚡ **Automatic failover** | If a provider throws, the router records the failure and moves to the next enabled provider. A single consolidated error is yielded only if every provider is down. |
-| 🛡️ **Circuit breaker health tracking** | Per-provider health state: failures, last check, circuit open/closed, and cooldown. `/providers` shows live status. |
+| 🔒 **Circuit breaker health tracking** | Per-provider health state: failures, last check, circuit open/closed, and cooldown. `/providers` shows live status. |
 | 🔧 **Agentic tool loop** | The model drives tools until it stops requesting them: `read_file`, `write_file`, `edit_file`, `list_dir`, `bash`, `glob`, `grep`, `web_search`, `vision`, and `git`. |
-| 💬 **Streaming TUI** | A ChatGPT-style terminal interface with streaming output, conversation history, regenerate, and side-by-side model comparison. |
+| 📝 **Streaming TUI** | A ChatGPT-style terminal interface with streaming output, conversation history, regenerate, and side-by-side model comparison. |
 | 🧠 **Persistent memory** | Long-term memory stored on disk so the agent remembers you across sessions. |
 | 🎯 **Plan / Yolo modes** | `--plan` for step-by-step approval, `--yolo` for autonomous execution. |
 | 💰 **Token & cost tracker** | Per-provider, per-model request, input/output token counts, and estimated USD cost. `/cost` and `/reset-cost`. |
@@ -48,22 +42,22 @@ Aether is a TypeScript CLI agent that turns your terminal into an autonomous cod
 
 ```text
 +- Aether --------------------------------------------------+
-¦                                                             ¦
-¦  ollama-local · qwen2.5-coder:7b                           ¦
-¦                                                             ¦
-¦  ? Build a REST API in Node.js with CRUD endpoints          ¦
-¦                                                             ¦
-¦  ? [tool: read_file] src/index.ts                           ¦
-¦  ? [tool: glob] src/**/*.ts                                 ¦
-¦  ? [tool: edit_file] src/index.ts                           ¦
-¦  ?                                                           ¦
-¦  Here's a complete REST API with CRUD endpoints...          ¦
-¦                                                             ¦
-¦  ? Created src/routes/users.ts                              ¦
-¦  ? Created src/routes/posts.ts                              ¦
-¦  ? Created tests/routes/users.test.ts                       ¦
-¦                                                             ¦
-¦  ? _                                                         ¦
+|                                                             |
+|  ollama-local · qwen2.5-coder:7b                           |
+|                                                             |
+|  ? Build a REST API in Node.js with CRUD endpoints          |
+|                                                             |
+|  ? [tool: read_file] src/index.ts                           |
+|  ? [tool: glob] src/**/*.ts                                 |
+|  ? [tool: edit_file] src/index.ts                           |
+|  ?                                                           |
+|  Here's a complete REST API with CRUD endpoints...          |
+|                                                             |
+|  ? Created src/routes/users.ts                              |
+|  ? Created src/routes/posts.ts                              |
+|  ? Created tests/routes/users.test.ts                       |
+|                                                             |
+|  ? _                                                         |
 +-------------------------------------------------------------+
 ```
 
@@ -86,55 +80,79 @@ one degrades...
 | `/provider <name>` | Switch the active provider |
 | `/models` | List all available models across providers |
 | `/providers` | Show provider health status |
-| `/session save [name] \| load <name> \| list \| clear` | Manage sessions |
+| `/session save [name] | load <name> | list | clear` | Manage sessions |
 | `/arena` | Enter arena mode (compare models) |
 | `/cost` | Show token usage and estimated cost summary |
 | `/reset-cost` | Reset cost and token counters |
-| `/settings [set <key> <value> \| reset]` | View or modify settings |
+| `/settings [set <key> <value> | reset]` | View or modify settings |
 | `/stats` | Show session stats, cost summary, and provider health |
 | `/skills` | List available custom skills |
 | `/skill <name> [args]` | Run a custom skill |
+| `/connect <provider> <api_key>` | Connect an API key for a provider (saved to `~/.aether/keys.json`) |
+| `/keys` | List which providers have API keys configured |
+| `/disconnect <provider>` | Remove an API key |
 | `/exit` (or `/quit`) | Exit the TUI |
+
+## How It Works
+
+Aether is three layers that talk to each other: your prompt flows from the CLI, through the Router, and out to whichever provider is best right now.
+
+```
+  Your Prompt
+      v
+  +-------------+
+  |  Aether CLI  |  <- streaming TUI, tools, memory, arena
+  +------^-------+
+         v
+  +-------------+
+  |   Router    |  <- priority order, circuit breaker, automatic failover
+  +------^-------+
+    v v v v v
+  +---+---+---+---+---+
+  |Ollama|Groq|Gemini|Mistral|...|  <- 17 free providers
+  +---+---+---+---+---+
+```
+
+- **CLI** -- the streaming TUI (`npx tsx src/index.ts`) plus the one-shot runner. It holds your tools, memory, sessions, and skills.
+- **Router** (`src/router-engine.ts`) -- keeps a priority-ordered list of providers, runs a circuit breaker, and fails over automatically when one degrades. API keys live in the `KeyManager` (`src/keys.ts`).
+- **Providers** -- local Ollama, OpenRouter free-tier, and any OpenAI-compatible endpoint. Each is wrapped behind one interface so the router never cares which one is speaking.
 
 ## Getting Started
 
-Aether is TypeScript and runs via `tsx` — zero runtime dependencies.
+# One-line run (uses tsx, no install needed):
+npx tsx src/index.ts "your prompt here"
 
-```bash
-git clone https://github.com/hemansubedi10/aether.git
+# Or clone and run:
+git clone https://github.com/hemansubedi10/aether
 cd aether
-npx tsx src/index.ts "your prompt here"   # one-shot
-npx tsx src/index.ts                       # interactive TUI
-```
+npx tsx src/index.ts "hello world"
 
-Optional env vars for one-shot mode:
+# Interactive TUI (Claude Code / ChatGPT style):
+npx tsx src/index.ts
 
-```bash
-AETHER_PROVIDER=ollama-local AETHER_MODEL=qwen2.5-coder:7b \
-  npx tsx src/index.ts "refactor this"
-```
+## Connect Cloud Providers
 
-## Providers
+Cloud providers need an API key. Local Ollama works with no key, but cloud providers need free API keys. There are two methods:
 
-- **Ollama local** — unlimited, no token limits, no auth. Make sure Ollama is running and the models are pulled.
-- **OpenRouter free-tier** — access free models on the OpenRouter network.
-- **OpenAI-compatible** — point at any OpenAI-compatible endpoint.
+# Method A: environment variables (temporary, per-session)
+export OPENROUTER_API_KEY="sk-or-..."
+export GROQ_API_KEY="gsk_..."
+npx tsx src/index.ts "ask groq something"
 
-Configure providers in your Aether config; priority order and enable/disable are all configurable.
+# Method B: /connect command (permanent, saved to ~/.aether/keys.json)
+npx tsx src/index.ts /connect openrouter-free sk-or-...
+npx tsx src/index.ts /connect groq gsk_...
+npx tsx src/index.ts /keys        # list what's connected
 
-## Why Aether?
+## Free API Keys
 
-| Claude Code / Kilo | Aether |
-|---|---|---|
-| **Cost** | Paid API usage | **Free & unlimited** via local Ollama |
-| **Provider lock-in** | One vendor | **Multi-provider** with automatic failover |
-| **Offline** | Cloud-only | **Fully local** when Ollama is running |
-| **Token limits** | Bounded by vendor | **Unlimited** on local models |
-| **Health awareness** | Retry only | **Circuit breaker** + health radar |
-| **License** | Proprietary | **MIT** |
+You do not need a credit card for any of these:
 
-Aether is not affiliated with Anthropic, Kilo, or any provider. It is an independent, open-source project.
+- **OpenRouter** (openrouter.ai) — free tier, no card, many free models
+- **Groq** (groq.com) — 1M tokens/day free
+- **HuggingFace** (huggingface.co) — free inference API
+- **Cohere** (cohere.ai) — free tier
+- **Mistral** (mistral.ai) — free tier
+- **DeepSeek** (deepseek.com) — pay-as-you-go, very cheap
 
-## License
-
-MIT
+Keys are stored locally in `~/.aether/keys.json` and are never uploaded.
