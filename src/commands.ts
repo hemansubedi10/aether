@@ -3,6 +3,7 @@ import * as path from "node:path";
 import * as os from "node:os";
 import * as fs from "node:fs";
 import { Session } from "./session.js";
+import { CostTracker } from "./cost.js";
 
 export interface CommandContext {
   tui: any;
@@ -10,6 +11,7 @@ export interface CommandContext {
   router: any;
   session: any;
   arena: any;
+  costTracker?: any;
 }
 
 export interface CommandHandler {
@@ -180,6 +182,36 @@ export const CommandHandler: Record<string, CommandHandler> = {
     help: "/exit - Exit the TUI",
     run: (_args, ctx) => {
       ctx.tui.exit();
+    },
+  },
+
+  cost: {
+    help: "/cost - Show token usage and estimated cost summary",
+    run: (_args, ctx) => {
+      const tracker = ctx.tui.costTracker;
+      if (!tracker) {
+        ctx.tui.showSystem("Cost tracking not available.");
+        return;
+      }
+      ctx.tui.showSystem(tracker.formatSummary());
+    },
+  },
+
+  "reset-cost": {
+    help: "/reset-cost - Reset cost and token counters",
+    run: (_args, ctx) => {
+      const tracker = ctx.tui.costTracker;
+      if (!tracker) {
+        ctx.tui.showSystem("Cost tracking not available.");
+        return;
+      }
+      tracker.reset();
+      try {
+        CostTracker.save(tracker);
+      } catch {
+        // best-effort persistence
+      }
+      ctx.tui.showSystem("Cost counters reset.");
     },
   },
 

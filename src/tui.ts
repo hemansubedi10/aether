@@ -8,8 +8,10 @@ import { Router } from "./router.js";
 import { Arena, type ArenaResult } from "./arena.js";
 import { CommandHandler, parseCommand, type CommandContext } from "./commands.js";
 import { getConfig } from "./config.js";
+import { messageText } from "./types.js";
 import { HealthTracker } from "./health.js";
 import { ToolRegistry } from "./tools/registry.js";
+import type { CostTracker } from "./cost.js";
 import {
   makeReadFileTool,
   makeWriteFileTool,
@@ -63,6 +65,7 @@ export class TUI {
   readonly router: Router;
   readonly session: Session;
   readonly arena: Arena;
+  readonly costTracker?: CostTracker;
 
   private rl: readline.Interface;
   private isTty: boolean;
@@ -83,11 +86,13 @@ export class TUI {
     router: Router;
     session: Session;
     arena: Arena;
+    costTracker?: CostTracker;
   }) {
     this.agent = opts.agent;
     this.router = opts.router;
     this.session = opts.session;
     this.arena = opts.arena;
+    this.costTracker = opts.costTracker;
 
     this.isTty = Boolean(process.stdin.isTTY && process.stdout.isTTY);
     this.rl = readline.createInterface({
@@ -99,7 +104,7 @@ export class TUI {
 
     for (const m of this.session.messages) {
       if (m.role === "system") continue;
-      this.messages.push({ role: m.role as Msg["role"], content: m.content });
+      this.messages.push({ role: m.role as Msg["role"], content: messageText(m) });
     }
   }
 
@@ -619,6 +624,7 @@ export function createTUI(opts: {
   router: Router;
   session: Session;
   arena: Arena;
+  costTracker?: CostTracker;
 }): TUI {
   return new TUI(opts);
 }

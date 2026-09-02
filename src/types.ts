@@ -1,8 +1,20 @@
 export type Role = "system" | "user" | "assistant" | "tool";
 
+export interface TextPart {
+  type: "text";
+  text: string;
+}
+
+export interface ImageUrlPart {
+  type: "image_url";
+  image_url: { url: string } | string;
+}
+
+export type ContentPart = TextPart | ImageUrlPart;
+
 export interface Message {
   role: Role;
-  content: string;
+  content: string | ContentPart[];
   tool_calls?: ToolCall[];
   tool_call_id?: string;
   name?: string;
@@ -54,4 +66,12 @@ export interface RouteDecision {
   provider: string;
   model: string;
   reason: string;
+}
+
+/** Extract a plain-text representation of a message's content. */
+export function messageText(m: Message): string {
+  if (typeof m.content === "string") return m.content;
+  return m.content
+    .map((p) => (p.type === "text" ? p.text : "[image]"))
+    .join("");
 }

@@ -6,7 +6,7 @@ export function estimateTokens(text: string): number {
 }
 
 export function estimateMessageTokens(m: Message): number {
-  let n = estimateTokens(m.content ?? "");
+  let n = estimateTokens(typeof m.content === "string" ? m.content : m.content.map((p) => p.type === "text" ? p.text : "").join(""));
   if (m.tool_calls) {
     for (const tc of m.tool_calls) {
       n += estimateTokens(tc.function.name) + estimateTokens(tc.function.arguments);

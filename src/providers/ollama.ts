@@ -30,6 +30,35 @@ export class OllamaProvider implements Provider {
     }
   }
 
+  /**
+   * Resolve the actual model to use for a request. If the configured model
+   * (config.models[0]) is installed locally, use it; otherwise fall back to
+   * the first installed model. This keeps the CLI working even when the
+   * default config references a model that isn't present.
+   */
+  async resolveModel(): Promise<string> {
+    const configured = this.config.models[0];
+    if (configured) {
+      try {
+        const installed = await this.listModels();
+        if (installed.length === 0) return configured;
+        if (installed.includes(configured)) return configured;
+        // Configured model not installed: fall back to the first installed one.
+        return installed[0];
+      } catch {
+        return configured;
+      }
+    }
+    // No configured model: pick the first installed, else a sane default.
+    try {
+      const installed = await this.listModels();
+      if (installed.length > 0) return installed[0];
+    } catch {
+      // ignore
+    }
+    return "aether";
+  }
+
   async health(): Promise<Omit<HealthStatus, "provider">> {
     const start = Date.now();
     try {
@@ -69,14 +98,20 @@ export class OllamaProvider implements Provider {
     tools: ToolDef[],
     opts?: { signal?: AbortSignal; temperature?: number; maxTokens?: number }
   ): AsyncIterable<ChatChunk> {
+    // Auto-detect the real installed model at runtime; fall back gracefully.
+    const model = await this.resolveModel();
     const body: any = {
-      model: this.config.models[0] || "aether",
+      model,
       messages: messages.map((m) => ({
         role: m.role,
         content: m.content,
         ...(m.tool_calls ? { tool_calls: m.tool_calls } : {}),
         ...(m.tool_call_id ? { tool_call_id: m.tool_call_id } : {}),
         ...(m.name ? { name: m.name } : {}),
+        // Ollama vision: top-level `images` array of base64 strings on a message.
+        ...(Array.isArray((m as any).images) && (m as any).images.length > 0
+          ? { images: (m as any).images }
+          : {}),
       })),
       stream: true,
       options: {

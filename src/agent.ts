@@ -1,6 +1,8 @@
 import type { Router } from "./router.js";
 import { ToolRegistry } from "./tools/registry.js";
 import type { ChatChunk, Message, ToolCall } from "./types.js";
+import type { Memory } from "./memory.js";
+import type { ModeManager } from "./modes.js";
 
 const DEFAULT_MAX_STEPS = 15;
 
@@ -29,7 +31,7 @@ function parseToolArgs(raw: any): Record<string, any> {
   return args;
 }
 
-const SYSTEM_PROMPT = `You are an expert AI software engineer with the ability to read, write, edit files, list directories, and run shell commands.
+const SYSTEM_PROMPT = `You are an expert AI software engineer with the ability to read, write, edit files, list directories, run shell commands, search the web, and describe images.
 
 WORKFLOW:
 1. Explore first: use ListDir to understand the project structure, then ReadFile to inspect relevant files.
@@ -42,20 +44,53 @@ STYLE:
 - Make changes in the smallest, most targeted way possible.
 - Only use tools when needed; do not call tools unnecessarily.
 - When a task is complete, summarize what was done in 1-2 sentences.
-- If a tool fails, read the error and retry with a fix.`;
+- If a tool fails, read the error and retry with a fix.
+
+TRUSTWORTHY TOOL RESULTS:
+- When a tool returns output, treat the tool output as the ground truth. Quote or reference the actual tool output verbatim rather than summarizing it from memory.
+- If a tool returned no matches or an empty result, say exactly that ("no matches found") and show the tool output verbatim - never invent files, line numbers, counts, or facts that the tool did not report.
+- Do not assume a tool succeeded if its output contains an ERROR: prefix; report the error to the user.
+- When counting or summarizing tool output (e.g. "how many files"), base your answer strictly on the returned lines and say how you derived it.`;
 
 export class Agent {
   readonly router: Router;
   readonly registry: ToolRegistry;
   readonly maxSteps: number;
   readonly systemPrompt: string;
+  readonly memory?: Memory;
+  readonly modeManager?: ModeManager;
   lastMessages: Message[] = [];
 
-  constructor(router: Router, registry: ToolRegistry, opts?: { maxSteps?: number; systemPrompt?: string }) {
+  constructor(
+    router: Router,
+    registry: ToolRegistry,
+    opts?: {
+      maxSteps?: number;
+      systemPrompt?: string;
+      memory?: Memory;
+      modeManager?: ModeManager;
+    }
+  ) {
     this.router = router;
     this.registry = registry;
     this.maxSteps = opts?.maxSteps ?? DEFAULT_MAX_STEPS;
     this.systemPrompt = opts?.systemPrompt ?? SYSTEM_PROMPT;
+    this.memory = opts?.memory;
+    this.modeManager = opts?.modeManager;
+  }
+
+  setMode(name: string): void {
+    if (!this.modeManager) throw new Error("Agent has no ModeManager");
+    this.modeManager.setMode(name);
+  }
+
+  getMode(): string {
+    return this.modeManager?.getMode() ?? "normal";
+  }
+
+  getActiveTools(): string[] {
+    if (!this.modeManager) return this.registry.list().map((d) => d.name);
+    return this.modeManager.allowedTools();
   }
 
   async *run(userMessage: string, history: Message[]): AsyncGenerator<ChatChunk, void> {

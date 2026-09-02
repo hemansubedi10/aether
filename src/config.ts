@@ -6,13 +6,21 @@ import type { ProviderConfig } from "./types.js";
 const CONFIG_DIR = path.join(os.homedir(), ".aether");
 const CONFIG_FILE = path.join(CONFIG_DIR, "config.json");
 
+// Real, locally-installed Ollama models (verified 2026-09-02):
+//   - goekdenizguelmez/JOSIEFIED-Qwen3:8b        (tool-capable, default)
+//   - hf.co/OBLITERATUS/Qwen3.8-27B-OBLITERATED:Q4_K_M (vision, no tools)
+export const DEFAULT_OLLAMA_MODELS = [
+  "goekdenizguelmez/JOSIEFIED-Qwen3:8b",
+  "hf.co/OBLITERATUS/Qwen3.8-27B-OBLITERATED:Q4_K_M",
+];
+
 export const DEFAULT_PROVIDERS: ProviderConfig[] = [
   {
     name: "ollama-local",
     type: "ollama",
     baseURL: process.env.AETHER_BASE_URL || "http://localhost:11434",
     apiKey: undefined,
-    models: [],
+    models: [...DEFAULT_OLLAMA_MODELS],
     priority: 1,
     enabled: true,
     maxRetries: 2,
@@ -76,7 +84,7 @@ export function loadConfig(): Config {
     );
   }
 
-  const defaultModel = envModel || fileConfig.defaultModel || "";
+  const defaultModel = envModel || fileConfig.defaultModel || DEFAULT_OLLAMA_MODELS[0];
   const activeProvider = envProvider || fileConfig.activeProvider;
 
   return { providers, defaultModel, activeProvider };
