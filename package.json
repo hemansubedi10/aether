@@ -10,6 +10,32 @@
     "dev": "tsx src/index.ts",
     "build": "tsc"
   },
+  "keywords": [
+    "ai",
+    "agent",
+    "llm",
+    "cli",
+    "ollama",
+    "openrouter",
+    "openai",
+    "typescript",
+    "coding-agent",
+    "multi-provider",
+    "failover"
+  ],
   "engines": { "node": ">=20" },
-  "dependencies": {}
+  "dependencies": {},
+  "author": {
+    "name": "Hemansubedi10",
+    "email": "hemansubedi10@gmail.com",
+    "url": "https://github.com/hemansubedi10"
+  },
+  "homepage": "https://github.com/hemansubedi10/aether#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hemansubedi10/aether.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hemansubedi10/aether/issues"
+  }
 }

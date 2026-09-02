@@ -1,0 +1,37 @@
+Commands:
+  /help - Show all available commands
+  /model <name> - Switch the active model
+  /provider <name> - Switch the active provider
+  /models - List all available models across providers
+  /providers - Show provider health status
+  /session save [name] | load <name> | list | clear - Manage sessions
+  /arena - Enter arena mode (compare models)
+  /exit - Exit the TUI
+  /cost - Show token usage and estimated cost summary
+  /reset-cost - Reset cost and token counters
+  /settings [set <key> <value> | reset] - View or modify settings
+  /stats - Show session stats, cost summary, and provider health
+  /quit - Exit the TUI
+  /skills - List available custom skills
+  /skill <name> [args] - Run a custom skill
+
+
+=== /stats ===
+
+Session:
+  messages: 0 (user: 0, assistant: 0, tool: 0)
+
+Cost:
+Provider           Model                                Requests  Input Tok  Output Tok  Cost (USD)
+-----------------  -----------------------------------  --------  ---------  ----------  ----------
+openai-compatible  gpt-4o-mini                          1         1000       500         0.005000  
+openrouter-free    mistral:7b                           2         150        300         0.000000  
+unknown            goekdenizguelmez/JOSIEFIED-Qwen3:8b  3         2744       3596        0.000000  
+ollama-local       goekdenizguelmez/JOSIEFIED-Qwen3:8b  7         6085       4007        0.000000  
+ollama-local       default                              14        17623      7574        0.000000  
+                                                                             Total       0.005000  
+
+Provider health:
+  ollama-local: healthy
+  openrouter-free: healthy
+  openai-compatible: unhealthy (HTTP 401)
