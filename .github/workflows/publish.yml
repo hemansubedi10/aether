@@ -22,7 +22,9 @@ jobs:
         with:
           node-version: 24
 
-      - name: Decode OIDC token claims
+      - name: Dump raw OIDC response
         run: |
-          TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL?audience=https://registry.npmjs.org/" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{console.log(JSON.stringify(JSON.parse(s).value||s))}catch(e){console.log(s)}})")
-          echo "$TOKEN" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const p=JSON.parse(s);console.log('repository='+p.repository);console.log('repository_owner='+p.repository_owner);console.log('repository_owner_id='+p.repository_owner_id);console.log('workflow='+p.workflow);console.log('ref='+p.ref);console.log('sha='+p.sha);console.log('actor='+p.actor);console.log('audience='+p.audience);console.log('issuer='+p.iss);console.log('exp='+p.exp);})"
+          echo "URL=$ACTIONS_ID_TOKEN_REQUEST_URL"
+          echo "TOKEN_LEN=${#ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
+          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL?audience=https://registry.npmjs.org/" | head -c 500
+          echo
