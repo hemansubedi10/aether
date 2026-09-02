@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="50%" stop-color="#0f1525"/>
+      <stop offset="100%" stop-color="#0a0e1a"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="50%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#f0abfc"/>
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#22d3ee" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="bigGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="300" fill="url(#bg)"/>
+  <g fill="#1e293b">
+    <circle cx="100" cy="80" r="1.5"/><circle cx="200" cy="80" r="1.5"/><circle cx="300" cy="80" r="1.5"/>
+    <circle cx="100" cy="150" r="1.5"/><circle cx="200" cy="150" r="1.5"/><circle cx="300" cy="150" r="1.5"/>
+    <circle cx="100" cy="220" r="1.5"/><circle cx="200" cy="220" r="1.5"/><circle cx="300" cy="220" r="1.5"/>
+    <circle cx="900" cy="80" r="1.5"/><circle cx="1000" cy="80" r="1.5"/><circle cx="1100" cy="80" r="1.5"/>
+    <circle cx="900" cy="150" r="1.5"/><circle cx="1000" cy="150" r="1.5"/><circle cx="1100" cy="150" r="1.5"/>
+    <circle cx="900" cy="220" r="1.5"/><circle cx="1000" cy="220" r="1.5"/><circle cx="1100" cy="220" r="1.5"/>
+  </g>
+  <g stroke="url(#lineGrad)" stroke-width="2" fill="none">
+    <line x1="0" y1="60" x2="420" y2="60"><animate attributeName="stroke-dasharray" from="0 200" to="200 0" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.4s" repeatCount="indefinite"/></line>
+    <line x1="0" y1="150" x2="380" y2="150"><animate attributeName="stroke-dasharray" from="0 200" to="200 0" dur="3s" begin="0.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="3s" begin="0.4s" repeatCount="indefinite"/></line>
+    <line x1="0" y1="240" x2="440" y2="240"><animate attributeName="stroke-dasharray" from="0 200" to="200 0" dur="2.6s" begin="0.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.6s" begin="0.8s" repeatCount="indefinite"/></line>
+    <line x1="780" y1="60" x2="1200" y2="60"><animate attributeName="stroke-dasharray" from="200 0" to="0 200" dur="2.8s" begin="0.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.8s" begin="0.2s" repeatCount="indefinite"/></line>
+    <line x1="820" y1="150" x2="1200" y2="150"><animate attributeName="stroke-dasharray" from="200 0" to="0 200" dur="3.2s" begin="0.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="3.2s" begin="0.6s" repeatCount="indefinite"/></line>
+    <line x1="760" y1="240" x2="1200" y2="240"><animate attributeName="stroke-dasharray" from="200 0" to="0 200" dur="2.5s" begin="1s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="1s" repeatCount="indefinite"/></line>
+  </g>
+  <text x="600" y="135" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="128" font-weight="800" letter-spacing="6" fill="url(#titleGrad)" filter="url(#bigGlow)">AETHER</text>
+  <g filter="url(#glow)">
+    <circle cx="580" cy="205" r="6" fill="#22d3ee"><animate attributeName="r" values="4;10;4" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+  </g>
+  <g filter="url(#glow)">
+    <circle cx="620" cy="205" r="6" fill="#a78bfa"><animate attributeName="r" values="4;10;4" dur="2s" begin="0.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0.3;1" dur="2s" begin="0.6s" repeatCount="indefinite"/></circle>
+  </g>
+  <g filter="url(#glow)">
+    <circle cx="660" cy="205" r="6" fill="#f0abfc"><animate attributeName="r" values="4;10;4" dur="2s" begin="1.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0.3;1" dur="2s" begin="1.2s" repeatCount="indefinite"/></circle>
+  </g>
+  <text x="600" y="270" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="18" font-weight="400" letter-spacing="3" fill="#94a3b8">free · unlimited · multi-provider LLM CLI</text>
+</svg>

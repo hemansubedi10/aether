@@ -11,6 +11,7 @@
     "scripts":  {
                     "start":  "tsx src/index.ts",
                     "dev":  "tsx src/index.ts",
+                    "stats":  "tsx src/index.ts /stats",
                     "build":  "tsc"
                 },
     "keywords":  [

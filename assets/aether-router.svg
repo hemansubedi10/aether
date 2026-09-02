@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" width="1200" height="280">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="50%" stop-color="#0f1525"/>
+      <stop offset="100%" stop-color="#0a0e1a"/>
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="50%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#f0abfc"/>
+    </linearGradient>
+    <linearGradient id="greenArrow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#4ade80" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="routerGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="280" fill="url(#bg)"/>
+  <g fill="#1e293b">
+    <circle cx="60" cy="60" r="1.5"/><circle cx="140" cy="60" r="1.5"/><circle cx="220" cy="60" r="1.5"/>
+    <circle cx="60" cy="140" r="1.5"/><circle cx="140" cy="140" r="1.5"/><circle cx="220" cy="140" r="1.5"/>
+    <circle cx="60" cy="220" r="1.5"/><circle cx="140" cy="220" r="1.5"/><circle cx="220" cy="220" r="1.5"/>
+    <circle cx="980" cy="60" r="1.5"/><circle cx="1060" cy="60" r="1.5"/><circle cx="1140" cy="60" r="1.5"/>
+    <circle cx="980" cy="140" r="1.5"/><circle cx="1060" cy="140" r="1.5"/><circle cx="1140" cy="140" r="1.5"/>
+    <circle cx="980" cy="220" r="1.5"/><circle cx="1060" cy="220" r="1.5"/><circle cx="1140" cy="220" r="1.5"/>
+  </g>
+
+  <!-- title -->
+  <text x="600" y="32" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="2" fill="url(#titleGrad)">Multi-Provider Routing with Automatic Failover</text>
+
+  <!-- provider nodes -->
+  <g>
+    <rect x="40" y="60" width="90" height="34" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <text x="85" y="81" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Ollama</text>
+  </g>
+  <g>
+    <rect x="40" y="123" width="90" height="34" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <text x="85" y="144" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">OpenRouter</text>
+  </g>
+  <g>
+    <rect x="40" y="186" width="90" height="34" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <text x="85" y="207" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Groq</text>
+  </g>
+  <g>
+    <rect x="1070" y="60" width="90" height="34" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <text x="1115" y="81" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Mistral</text>
+  </g>
+  <g>
+    <rect x="1070" y="123" width="90" height="34" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <text x="1115" y="144" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="600" fill="#94a3b8">Together</text>
+  </g>
+
+  <!-- arrows from providers INTO router -->
+  <g stroke="url(#greenArrow)" stroke-width="2.5" fill="none">
+    <line x1="130" y1="77" x2="530" y2="140">
+      <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;0" dur="2.2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="130" y1="140" x2="530" y2="140">
+      <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.6s" begin="0.3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;0" dur="2.6s" begin="0.3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="130" y1="203" x2="530" y2="140">
+      <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+    </line>
+    <line x1="1070" y1="77" x2="670" y2="140">
+      <animate attributeName="stroke-dasharray" from="500 0" to="0 500" dur="2.3s" begin="0.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;0" dur="2.3s" begin="0.2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="1070" y1="140" x2="670" y2="140">
+      <animate attributeName="stroke-dasharray" from="500 0" to="0 500" dur="2.7s" begin="0.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;0" dur="2.7s" begin="0.5s" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- arrowhead markers -->
+  <defs>
+    <marker id="arrowIn" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#4ade80"/>
+    </marker>
+    <marker id="arrowOut" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#fbbf24"/>
+    </marker>
+  </defs>
+
+  <!-- router -->
+  <g filter="url(#routerGlow)">
+    <rect x="530" y="108" width="140" height="64" rx="14" fill="#0f172a" stroke="#4ade80" stroke-width="2"/>
+    <text x="600" y="134" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="15" font-weight="700" fill="#4ade80">ROUTER</text>
+    <text x="600" y="152" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="9" font-weight="500" fill="#64748b">auto-failover</text>
+  </g>
+
+  <!-- circuit breaker pulse -->
+  <g filter="url(#glow)">
+    <circle cx="600" cy="175" r="4" fill="#fbbf24">
+      <animate attributeName="r" values="3;8;3" dur="1.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.2;1" dur="1.6s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- router OUT to CLI -->
+  <g>
+    <line x1="670" y1="140" x2="1050" y2="203" stroke="#fbbf24" stroke-width="2.5" fill="none" marker-end="url(#arrowOut)">
+      <animate attributeName="stroke-dasharray" from="0 500" to="500 0" dur="2s" begin="0.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;0" dur="2s" begin="0.8s" repeatCount="indefinite"/>
+    </line>
+  </g>
+  <g>
+    <rect x="1050" y="186" width="110" height="34" rx="8" fill="#0f172a" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="1105" y="207" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="700" fill="#fbbf24">CLI</text>
+  </g>
+</svg>

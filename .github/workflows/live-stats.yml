@@ -1,0 +1,42 @@
+name: live-stats
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  live-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate stats
+        run: npm run stats > docs/stats.txt
+
+      - name: Generate providers
+        run: npx tsx src/index.ts /providers > docs/providers.txt
+
+      - name: Generate stats card
+        run: npx tsx scripts/generate-stats-card.ts
+
+      - name: Commit stats
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/stats.txt docs/providers.txt docs/stats.md
+          git commit -m "Update live stats" || echo "No changes to commit"
+          git push

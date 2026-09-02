@@ -6,6 +6,8 @@
 
 # Aether
 
+<p align="center"><img src="assets/aether-banner.svg" alt="Aether Banner" width="100%"></p>
+
 [![GitHub stars](https://img.shields.io/github/stars/hemansubedi10/aether?style=for-the-badge&color=blue)](https://github.com/hemansubedi10/aether)
 [![GitHub forks](https://img.shields.io/github/forks/hemansubedi10/aether?style=for-the-badge&color=green)](https://github.com/hemansubedi10/aether)
 [![GitHub issues](https://img.shields.io/github/issues/hemansubedi10/aether?style=for-the-badge&color=red)](https://github.com/hemansubedi10/aether)
@@ -19,9 +21,13 @@ Aether is a Claude Code / Kilo-class AI agent for your terminal. It unifies ever
 
 ## What is Aether?
 
+<p align="center"><img src="assets/aether-router.svg" alt="Multi-provider routing with automatic failover" width="100%"></p>
+
 Aether is a TypeScript CLI agent that turns your terminal into an autonomous coding assistant. At its heart is a **router** that keeps a priority-ordered list of providers and automatically fails over when one degrades. A **health tracker** opens a circuit breaker on repeated failures, so bad providers get skipped instead of blocking you. Everything streams through a ChatGPT-style TUI, and sessions, costs, checkpoints, and custom skills all persist on disk.
 
 ## Features
+
+<p align="center"><img src="assets/aether-arena.svg" alt="Live Model Arena" width="100%"></p>
 
 | Feature | Description |
 |---------|-------------|

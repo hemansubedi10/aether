@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 260" width="1200" height="260">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="100%" stop-color="#0f1525"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="barGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="260" fill="url(#bg)"/>
+
+  <text x="600" y="36" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="bold" fill="#ffffff">
+    Live Model Arena &#183; Blind A/B Voting &#183; Elo Ranking
+  </text>
+
+  <g>
+    <rect x="40" y="60" width="200" height="140" rx="12" ry="12" fill="url(#cardGrad)" stroke="#334155" stroke-width="1"/>
+    <text x="140" y="92" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#e2e8f0">Model A</text>
+    <circle cx="80" cy="130" r="5" fill="#94a3b8"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.4s" begin="0s" repeatCount="indefinite"/></circle>
+    <circle cx="100" cy="130" r="5" fill="#94a3b8"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.4s" begin="0.466s" repeatCount="indefinite"/></circle>
+    <circle cx="120" cy="130" r="5" fill="#94a3b8"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.4s" begin="0.933s" repeatCount="indefinite"/></circle>
+  </g>
+
+  <g>
+    <rect x="300" y="60" width="200" height="140" rx="12" ry="12" fill="url(#cardGrad)" stroke="#334155" stroke-width="1"/>
+    <text x="400" y="92" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#e2e8f0">Model B</text>
+    <circle cx="340" cy="130" r="5" fill="#94a3b8"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.4s" begin="0s" repeatCount="indefinite"/></circle>
+    <circle cx="360" cy="130" r="5" fill="#94a3b8"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.4s" begin="0.466s" repeatCount="indefinite"/></circle>
+    <circle cx="380" cy="130" r="5" fill="#94a3b8"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.4s" begin="0.933s" repeatCount="indefinite"/></circle>
+  </g>
+
+  <g>
+    <rect x="560" y="60" width="200" height="140" rx="12" ry="12" fill="url(#cardGrad)" stroke="#334155" stroke-width="1"/>
+    <text x="660" y="92" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="bold" fill="#e2e8f0">Model C</text>
+    <circle cx="600" cy="130" r="5" fill="#94a3b8"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.4s" begin="0s" repeatCount="indefinite"/></circle>
+    <circle cx="620" cy="130" r="5" fill="#94a3b8"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.4s" begin="0.466s" repeatCount="indefinite"/></circle>
+    <circle cx="640" cy="130" r="5" fill="#94a3b8"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.4s" begin="0.933s" repeatCount="indefinite"/></circle>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#e2e8f0">
+    <text x="820" y="50" font-size="13" font-weight="bold" fill="#94a3b8">ELO LEADERBOARD</text>
+    <text x="820" y="80">Model A</text>
+    <text x="900" y="80" fill="#94a3b8">1240</text>
+    <rect x="960" y="68" width="0" height="10" rx="5" fill="url(#barGrad)"><animate attributeName="width" from="0" to="80" dur="1.5s" begin="0s" repeatCount="indefinite"/></rect>
+    <text x="820" y="110">Model B</text>
+    <text x="900" y="110" fill="#94a3b8">1215</text>
+    <rect x="960" y="98" width="0" height="10" rx="5" fill="url(#barGrad)"><animate attributeName="width" from="0" to="60" dur="1.5s" begin="0.5s" repeatCount="indefinite"/></rect>
+    <text x="820" y="140">Model C</text>
+    <text x="900" y="140" fill="#94a3b8">1142</text>
+    <rect x="960" y="128" width="0" height="10" rx="5" fill="url(#barGrad)"><animate attributeName="width" from="0" to="40" dur="1.5s" begin="1s" repeatCount="indefinite"/></rect>
+  </g>
+
+  <g filter="url(#glow)">
+    <circle cx="1140" cy="120" r="8" fill="#22c55e"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+    <circle cx="1140" cy="120" r="8" fill="#22c55e" opacity="0.6"><animateTransform attributeName="transform" type="scale" values="1;2.5;1" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite"/></circle>
+  </g>
+</svg>
