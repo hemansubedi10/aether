@@ -370,3 +370,28 @@ bash
 npm install -g aether-ai
 
 
+
+## Publishing
+
+Aether is published on npm as **`aether-ai`**. Install it globally with:
+
+```bash
+npm install -g aether-ai
+aether-ai "your prompt"
+```
+
+Package page: [npmjs.com/package/aether-ai](https://www.npmjs.com/package/aether-ai).
+
+### Trusted Publishing (OIDC — no token needed)
+
+New versions are published automatically by a GitHub Actions workflow using npm **Trusted Publishing**. There is no npm token to manage — GitHub Actions authenticates to npm via OpenID Connect.
+
+To release a new version:
+
+```bash
+./scripts/release.sh patch   # or minor / major
+```
+
+That script bumps the version, commits, tags (e.g. `v1.0.1`), and pushes. Pushing a `v*` tag triggers the `publish.yml` workflow, which builds and runs `npm publish --access public` with no token.
+
+You can also trigger a publish manually from the Actions tab.
