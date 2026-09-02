@@ -12,6 +12,7 @@ import { messageText } from "./types.js";
 import { HealthTracker } from "./health.js";
 import { ToolRegistry } from "./tools/registry.js";
 import type { CostTracker } from "./cost.js";
+import type { Settings } from "./settings.js";
 import {
   makeReadFileTool,
   makeWriteFileTool,
@@ -66,6 +67,7 @@ export class TUI {
   readonly session: Session;
   readonly arena: Arena;
   readonly costTracker?: CostTracker;
+  readonly settings?: Settings;
 
   private rl: readline.Interface;
   private isTty: boolean;
@@ -87,12 +89,14 @@ export class TUI {
     session: Session;
     arena: Arena;
     costTracker?: CostTracker;
+    settings?: Settings;
   }) {
     this.agent = opts.agent;
     this.router = opts.router;
     this.session = opts.session;
     this.arena = opts.arena;
     this.costTracker = opts.costTracker;
+    this.settings = opts.settings;
 
     this.isTty = Boolean(process.stdin.isTTY && process.stdout.isTTY);
     this.rl = readline.createInterface({
@@ -558,6 +562,7 @@ export class TUI {
       router: this.router,
       session: this.session,
       arena: this.arena,
+      settings: this.settings,
     };
 
     const handler = CommandHandler[command];
@@ -567,11 +572,9 @@ export class TUI {
     }
 
     try {
-      const result = handler.run(args, ctx);
+      const result = await handler.run(args, ctx);
       if (typeof result === "string") {
         this.showSystem(result);
-      } else if (result) {
-        await result;
       }
     } catch (err) {
       this.showSystem(`Command error: ${(err as Error).message}`);
@@ -625,6 +628,7 @@ export function createTUI(opts: {
   session: Session;
   arena: Arena;
   costTracker?: CostTracker;
+  settings?: Settings;
 }): TUI {
   return new TUI(opts);
 }
@@ -643,3 +647,8 @@ export async function runTUI(): Promise<void> {
   const tui = new TUI({ agent, router, session, arena });
   tui.start();
 }
+
+
+
+
+

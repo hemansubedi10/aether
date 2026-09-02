@@ -4,6 +4,24 @@ import * as os from "node:os";
 import * as fs from "node:fs";
 import { Session } from "./session.js";
 import { CostTracker } from "./cost.js";
+import { Settings, type SettingsData } from "./settings.js";
+
+function coerceSetting(key: string, raw: string): SettingsData[keyof SettingsData] {
+  const s = Settings.instance().getAll();
+  const cur = (s as any)[key];
+  if (typeof cur === "boolean") {
+    const v = raw.trim().toLowerCase();
+    if (["true","1","yes","on"].includes(v)) return true as any;
+    if (["false","0","no","off"].includes(v)) return false as any;
+    return cur as any;
+  }
+  if (typeof cur === "number") {
+    const n = Number(raw);
+    return (Number.isFinite(n) ? n : cur) as any;
+  }
+  return raw as any;
+}
+
 
 export interface CommandContext {
   tui: any;
@@ -12,6 +30,7 @@ export interface CommandContext {
   session: any;
   arena: any;
   costTracker?: any;
+  settings?: Settings;
 }
 
 export interface CommandHandler {
@@ -214,11 +233,95 @@ export const CommandHandler: Record<string, CommandHandler> = {
       ctx.tui.showSystem("Cost counters reset.");
     },
   },
+  settings: {
+    help: "/settings [set <key> <value> | reset] - View or modify settings",
+    run: (args, ctx) => {
+      const settings = ctx.settings ?? Settings.instance();
+      const sub = args[0]?.toLowerCase() ?? "";
+
+      if (sub === "set") {
+        const key = args[1];
+        const value = args.slice(2).join(" ").trim();
+        if (!key) {
+          return "Usage: /settings set <key> <value>";
+        }
+        if (!(key in settings.getAll())) {
+          return `Unknown setting "${key}". Available: ${Object.keys(settings.getAll()).join(", ")}`;
+        }
+        const coerced = coerceSetting(key, value);
+        settings.set(key as keyof SettingsData, coerced);
+        settings.save();
+        return `Set ${key} = ${coerced}`;
+      }
+
+      if (sub === "reset") {
+        settings.reset();
+        settings.save();
+        return "Settings reset to defaults.";
+      }
+
+      const s = settings.getAll();
+      const lines = [
+        "Settings:",
+        ...Object.entries(s).map(([k, v]) => `  ${k}: ${v}`),
+        "",
+        "Usage: /settings set <key> <value> | reset",
+      ];
+      return lines.join("\n");
+    },
+  },
+
+  stats: {
+    help: "/stats - Show session stats, cost summary, and provider health",
+    run: async (_args, ctx) => {
+      const lines: string[] = [];
+      const session = ctx.session;
+      const messages = session?.messages ?? [];
+      const userCount = messages.filter((m: any) => m.role === "user").length;
+      const assistantCount = messages.filter((m: any) => m.role === "assistant").length;
+      const toolCount = messages.filter((m: any) => m.role === "tool").length;
+      lines.push("Session:");
+      lines.push(`  messages: ${messages.length} (user: ${userCount}, assistant: ${assistantCount}, tool: ${toolCount})`);
+
+      const tracker = ctx.costTracker ?? ctx.tui.costTracker;
+      if (tracker) {
+        lines.push("");
+        lines.push("Cost:");
+        lines.push(tracker.formatSummary());
+      } else {
+        lines.push("");
+        lines.push("Cost: (not available)");
+      }
+
+      lines.push("");
+      lines.push("Provider health:");
+      try {
+        const statuses = await ctx.router.healthAll();
+        if (statuses.length === 0) {
+          lines.push("  (no providers)");
+        } else {
+          for (const s of statuses) {
+            const state = s.healthy ? "healthy" : s.circuitOpen ? "OPEN" : "unhealthy";
+            const err = s.lastError ? ` (${s.lastError})` : "";
+            lines.push(`  ${s.provider}: ${state}${err}`);
+          }
+        }
+      } catch (err) {
+        lines.push(`  (health check failed: ${(err as Error).message})`);
+      }
+      return lines.join("\n");
+    },
+  },
 
   quit: {
+
     help: "/quit - Exit the TUI",
     run: (_args, ctx) => {
       ctx.tui.exit();
     },
   },
 };
+
+
+
+

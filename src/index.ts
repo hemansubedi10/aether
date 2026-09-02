@@ -15,6 +15,7 @@ import { Arena } from "./arena.js";
 import { Memory } from "./memory.js";
 import { ModeManager } from "./modes.js";
 import { CostTracker } from "./cost.js";
+import { Settings } from "./settings.js";
 import { createTUI } from "./tui.js";
 import type { ChatChunk, Message, ToolDef } from "./types.js";
 
@@ -75,8 +76,9 @@ export function createTUIContext(rootDir: string = process.cwd()) {
   const session = new Session();
   const arena = new Arena(router);
   const costTracker = CostTracker.load();
-  const tui = createTUI({ agent, router, session, arena, costTracker });
-  return { agent, router, session, arena, costTracker, tui };
+  const settings = Settings.load();
+  const tui = createTUI({ agent, router, session, arena, costTracker, settings });
+  return { agent, router, session, arena, costTracker, settings, tui };
 }
 
 export { Router, HealthTracker, getConfig, Agent, ToolRegistry, Session, Arena, createTUI, Memory, ModeManager, CostTracker };
@@ -141,6 +143,7 @@ if (isMainModule()) {
         }
         const session = new Session();
         const costTracker = CostTracker.load();
+  const settings = Settings.load();
         const provider = agent.router.getActiveProvider() ?? "unknown";
         const model = agent.router.getActiveModel() ?? "default";
         if (modeFlag) agent.setMode(modeFlag);
