@@ -1,62 +1,31 @@
-﻿{
-  "name": "aether",
+{
+  "name": "aether-ai",
   "version": "1.0.0",
-  "description": "Advanced free LLM CLI agent with multi-provider routing, failover, and agentic tool use.",
+  "description": "The Aether CLI: the free, unlimited, multi-provider LLM CLI - install like KiloCode, run like Claude Code.",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "bin": {
-    "aether": "src/index.ts",
-    "aether-server": "src/server.ts"
+    "aether-ai": "dist/index.js",
+    "aether-ai-server": "dist/server.js"
   },
   "scripts": {
-    "start": "tsx src/index.ts",
-    "dev": "tsx src/index.ts",
-    "stats": "tsx src/index.ts /stats",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
   },
-  "keywords": [
-    "ai",
-    "agent",
-    "llm",
-    "cli",
-    "ollama",
-    "openrouter",
-    "openai",
-    "typescript",
-    "coding-agent",
-    "multi-provider",
-    "failover"
-  ],
-  "engines": {
-    "node": ">=20"
-  },
-  "dependencies": {
-    "typescript": "^5.7.0",
-    "tsx": "^4.19.0",
-    "@types/node": "^22.0.0"
-  },
-  "install": "bash install.sh (macOS/Linux) or powershell -ExecutionPolicy Bypass -File install.ps1 (Windows). Requires Node.js >= 20.",
-  "files": [
-    "src",
-    "tsconfig.json",
-    "README.md",
-    "INSTALL.md",
-    "LICENSE",
-    "install.sh",
-    "install.ps1",
-    "package.json"
-  ],
-  "author": {
-    "name": "Hemansubedi10",
-    "email": "hemansubedi10@gmail.com",
-    "url": "https://github.com/hemansubedi10"
-  },
-  "homepage": "https://github.com/hemansubedi10/aether#readme",
+  "engines": { "node": ">=20" },
+  "keywords": ["llm", "cli", "ai", "router", "ollama", "openrouter", "free"],
+  "author": "Heman Subedi <hemansubedi66@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/hemansubedi10/aether",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hemansubedi10/aether.git"
+    "url": "https://github.com/hemansubedi10/aether.git"
   },
-  "bugs": {
-    "url": "https://github.com/hemansubedi10/aether/issues"
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^7.0.0",
+    "tsx": "^4.0.0",
+    "@types/node": "^22.0.0"
   }
 }

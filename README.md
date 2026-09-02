@@ -353,3 +353,20 @@ Add in local-first Ollama (priority 1, zero cost), zero-install one-shot mode (`
 [MIT License](LICENSE) -- built by [Hemansubedi10](https://github.com/hemansubedi10).
 
 Full docs: [docs/aether.md](docs/aether.md) | [INSTALL.md](INSTALL.md) | [Report an issue](https://github.com/hemansubedi10/aether/issues)
+## Install via npm
+
+```bash
+npm install -g aether-ai
+aether-ai "your prompt"
+```
+
+The package is published on npm: [npmjs.com/package/aether](https://www.npmjs.com/package/aether-ai).
+
+## Install
+
+Install the Aether CLI globally:
+
+bash
+npm install -g aether-ai
+
+
