@@ -1,5 +1,5 @@
 {
-  "name": "aether-ai",
+  "name": "@hemansubedi/aether-ai",
   "version": "1.0.0",
   "description": "The Aether CLI: the free, unlimited, multi-provider LLM CLI - install like KiloCode, run like Claude Code.",
   "type": "module",
