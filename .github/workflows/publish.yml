@@ -3,7 +3,7 @@ name: Publish to npm
 on:
   push:
     tags:
-      - 'v*'
+      - '"'"'v*'"'"'
   workflow_dispatch:
 
 permissions:
@@ -26,5 +26,5 @@ jobs:
         run: |
           echo "URL=$ACTIONS_ID_TOKEN_REQUEST_URL"
           echo "TOKEN_LEN=${#ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
-          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL?audience=https://registry.npmjs.org/" | head -c 500
+          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL?audience=https://registry.npmjs.org/" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>process.stdout.write(s.slice(0,500)))"
           echo
