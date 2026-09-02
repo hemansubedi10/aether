@@ -2,6 +2,7 @@ import { HealthTracker } from "./health.js";
 import { createProvider, type Provider, type ProviderConfig } from "./providers/index.js";
 import { PROVIDER_REGISTRY, type FreeProvider } from "./providers/registry.js";
 import { KeyManager, ENV_MAP } from "./keys.js";
+import { type Combo } from "./combos.js";
 
 export interface RouteAttempt {
   provider: string;
@@ -25,6 +26,7 @@ export class RouterEngine {
   private cache = new Map<string, Provider>();
   private configs: ProviderConfig[];
   private keyManager: KeyManager;
+  activeModel?: string;
 
   constructor(providers?: FreeProvider[], health?: HealthTracker, keyManager?: KeyManager) {
     this.health = health ?? new HealthTracker();
@@ -53,6 +55,33 @@ export class RouterEngine {
     const cfg = this.configs.find((c) => c.name === name);
     if (cfg) cfg.apiKey = key.trim() || undefined;
     this.cache.delete(name);
+  }
+
+  /** Activate a combo: rebuild the router's active provider list from the
+   *  combo's providers (in order), set the active model to the combo's first
+   *  model, and invalidate the provider cache so the new providers load. */
+  applyCombo(combo: Combo): string {
+    this.configs = (combo.providers ?? [])
+      .map((name) => {
+        const p = PROVIDER_REGISTRY.find((x: FreeProvider) => x.name === name);
+        if (!p) return undefined;
+        return {
+          name: p.name,
+          type: p.type,
+          baseURL: p.baseURL,
+          apiKey: this.keyManager.get(p.name) ?? process.env[ENV_MAP[p.name] ?? ""],
+          models: p.models,
+          priority: p.priority,
+          enabled: p.enabled,
+          maxRetries: p.maxRetries,
+          timeoutMs: p.timeoutMs,
+        } as ProviderConfig;
+      })
+      .filter((c): c is ProviderConfig => Boolean(c));
+    this.cache.clear();
+    this.activeModel = combo.models?.[0];
+    const provs = this.configs.map((c) => c.name).join(", ") || "(none)";
+    return `Combo "${combo.name}" active: ${this.configs.length} provider(s) [${provs}], model: ${this.activeModel ?? "(none)"}`;
   }
 
   private async getProvider(cfg: ProviderConfig): Promise<Provider> {
@@ -180,5 +209,6 @@ export class RouterEngine {
     }
     return out;
   }
+
   resetHealth() { this.health.resetAll(); }
 }

@@ -13,6 +13,7 @@ import { CostTracker } from "./cost.js";
 import { Settings, type SettingsData } from "./settings.js";
 
 import { Skills } from "./skills.js";
+import { ComboManager, type Combo } from "./combos.js";
 
 
 
@@ -633,6 +634,66 @@ export const CommandHandler: Record<string, CommandHandler> = {
   },
 
 
+
+
+  combo: {
+    help: "/combo list | create <name> [provider...] | select <name> | delete <name> - Manage provider/model combos",
+    run: (args, ctx) => {
+      const mgr = ComboManager.instance();
+      const sub = args[0] ? args[0].toLowerCase() : "";
+      const renderList = () => {
+        const list = mgr.list();
+        if (list.length === 0) return "No combos yet. Create one with: /combo create <name> [provider...]";
+        return ["Combos:", ...list.map((c) => {
+          const provs = c.providers.length ? c.providers.join(", ") : "(none)";
+          const models = c.models.length ? c.models.join(", ") : "(none)";
+          return "  " + c.name + (c.default ? " (built-in)" : "") + " - providers: " + provs + ", models: " + models;
+        })].join("\n");
+      };
+      switch (sub) {
+        case "list": { ctx.tui.showSystem(renderList()); return; }
+        case "create": {
+          const name = args[1];
+          if (!name) return "Usage: /combo create <name> [provider...]";
+          const providers = args.slice(2).map((p) => p.trim()).filter(Boolean);
+          if (mgr.get(name)) return 'Combo "' + name + '" already exists.';
+          const created = mgr.create(name, { providers });
+          if (!created) return 'Could not create combo "' + name + '".';
+          ctx.tui.showSystem('Created combo "' + name + '"' + (providers.length ? " with providers: " + providers.join(", ") : "") + ".");
+          ctx.tui.showSystem(mgr.render(name));
+          return;
+        }
+        case "select": {
+          const name = args[1];
+          if (!name) return "Usage: /combo select <name>";
+          const c = mgr.select(name);
+          if (!c) {
+            const names = mgr.list().map((x) => x.name).join(", ") || "(none)";
+            return 'Unknown combo "' + name + '". Available: ' + names;
+          }
+          for (const p of c.providers) {
+            if (ctx.router.getProviderNames().includes(p)) ctx.router.setActiveProvider(p);
+          }
+          if (c.models[0]) ctx.router.setActiveModel(c.models[0]);
+          ctx.tui.showSystem('Selected combo "' + name + '". Active provider: ' + (ctx.router.getActiveProvider() ?? "(none)") + ', model: ' + (ctx.router.getActiveModel() ?? "(default)"));
+          return;
+        }
+        case "delete": {
+          const name = args[1];
+          if (!name) return "Usage: /combo delete <name>";
+          const ok = mgr.delete(name);
+          if (!ok) return 'Cannot delete combo "' + name + '" (not found or built-in).';
+          ctx.tui.showSystem('Deleted combo "' + name + '".');
+          return;
+        }
+        default: {
+          ctx.tui.showSystem("Usage: /combo list | create <name> [provider...] | select <name> | delete <name>");
+          ctx.tui.showSystem("\n" + renderList());
+          return;
+        }
+      }
+    },
+  },
 
   quit: {
 
