@@ -1,4 +1,4 @@
-import * as path from "node:path";
+﻿import * as path from "node:path";
 import * as os from "node:os";
 import { RouterEngine } from "./router-engine.js";
 import { HealthTracker } from "./health.js";
@@ -19,6 +19,7 @@ import { CostTracker } from "./cost.js";
 import { Settings } from "./settings.js";
 import { createTUI } from "./tui.js";
 import type { ChatChunk, Message, ToolDef } from "./types.js";
+import { FreeRouterClient, type ChatResult } from "./client.js";
 
 export async function runChat(
   messages: Message[],
@@ -90,6 +91,65 @@ export function createAgent(rootDir: string = process.cwd()): Agent {
   return new Agent(router, registry, { memory, modeManager });
 }
 
+export function createAgentFromServer(baseURL?: string): Agent {
+  const client = new FreeRouterClient(baseURL);
+  const adapter: any = {
+    configs: [],
+    activeProvider: undefined as string | undefined,
+    activeModel: undefined as string | undefined,
+    select: () => null,
+    setActiveProvider: (n?: string) => { adapter.activeProvider = n; },
+    setActiveModel: (m: string) => { adapter.activeModel = m; },
+    getActiveProvider: () => adapter.activeProvider,
+    getActiveModel: () => adapter.activeModel,
+    getProviderNames: async () => {
+      const statuses = await client.providers();
+      return statuses.map((s) => s.provider);
+    },
+    getModelsFor: async (_name?: string) => {
+      const list = await client.listModels();
+      return list.data.map((m) => m.id);
+    },
+    listAllModels: async () => {
+      const list = await client.listModels();
+      const out: Record<string, string[]> = {};
+      for (const m of list.data) {
+        const owner = m.owned_by || "server";
+        (out[owner] ??= []).push(m.id);
+      }
+      return out;
+    },
+    healthAll: async () => client.providers(),
+    resetHealth: async () => { await client.resetHealth(); },
+  };
+  adapter.chat = async function* (messages: any, tools: any, opts?: any): AsyncGenerator<ChatChunk> {
+    const result: ChatResult = await client.chat(messages, {
+      model: opts?.model,
+      tools,
+      temperature: opts?.temperature,
+      maxTokens: opts?.maxTokens,
+      stream: false,
+    });
+    adapter.activeProvider = result.provider;
+    adapter.activeModel = result.model;
+    if (result.text) yield { type: "text", text: result.text } as ChatChunk;
+    for (const tc of result.toolCalls ?? []) {
+      yield { type: "tool_call", tool_call: tc } as ChatChunk;
+    }
+    yield { type: "done", usage: result.usage } as ChatChunk;
+  };
+
+  const registry = new ToolRegistry();
+  const factories = [
+    makeReadFileTool, makeWriteFileTool, makeEditFileTool, makeListDirTool, makeBashTool,
+    makeGlobTool, makeGrepTool, makeWebSearchTool, makeVisionTool, makeGitTool,
+  ];
+  for (const make of factories) {
+    const tool = make(process.cwd());
+    registry.register(tool.def, tool.execute);
+  }
+  return new Agent(adapter, registry, { memory: new Memory(), modeManager: new ModeManager() });
+}
 export function createTUIContext(rootDir: string = process.cwd()) {
   const cfg = getConfig();
   const engine = new RouterEngine();
@@ -110,7 +170,7 @@ export function createTUIContext(rootDir: string = process.cwd()) {
   return { agent, router, session, arena, costTracker, settings, tui };
 }
 
-export { RouterEngine, HealthTracker, getConfig, Agent, ToolRegistry, Session, Arena, createTUI, Memory, ModeManager, CostTracker, GitTool, Checkpoint, Skills };
+export { RouterEngine, HealthTracker, getConfig, Agent, ToolRegistry, Session, Arena, createTUI, Memory, ModeManager, CostTracker, GitTool, Checkpoint, Skills, FreeRouterClient };
 import { GitTool } from "./git.js";
 import { Checkpoint } from "./checkpoint.js";
 import { Skills } from "./skills.js";
@@ -212,3 +272,7 @@ if (isMainModule()) {
     })();
   }
 }
+
+
+
+
