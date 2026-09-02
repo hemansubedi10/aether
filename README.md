@@ -72,7 +72,7 @@ $ npx tsx src/index.ts
 
 +- Aether --------------------------------------------------+
 |                                                           |
-|  ollama-local · qwen2.5:7b                                |
+|  ollama-local Â· qwen2.5:7b                                |
 |                                                           |
 |  ? Build a REST API in Node.js with CRUD endpoints         |
 |                                                           |
@@ -97,16 +97,16 @@ $ npx tsx src/index.ts /arena
 
   ? Prompt: write a hello world server
   ? Running 3 models in parallel...
-  ? [Model A] ollama-local · qwen2.5:7b
-  ? [Model B] openrouter-free · llama-3.1-8b:free
-  ? [Model C] groq · llama-3.1-8b-instant
+  ? [Model A] ollama-local Â· qwen2.5:7b
+  ? [Model B] openrouter-free Â· llama-3.1-8b:free
+  ? [Model C] groq Â· llama-3.1-8b-instant
   ? Voting...
   ? Winner: Model A (Elo +12)
 
   ELO LEADERBOARD
-  1. Model A    1240  ████████████
-  2. Model B    1215  ██████████
-  3. Model C    1142  ████████
+  1. Model A    1240  ââââââââââââ
+  2. Model B    1215  ââââââââââ
+  3. Model C    1142  ââââââââ
 ```
 
 Session stats:
@@ -353,6 +353,7 @@ Add in local-first Ollama (priority 1, zero cost), zero-install one-shot mode (`
 [MIT License](LICENSE) -- built by [Hemansubedi10](https://github.com/hemansubedi10).
 
 Full docs: [docs/aether.md](docs/aether.md) | [INSTALL.md](INSTALL.md) | [Report an issue](https://github.com/hemansubedi10/aether/issues)
+
 ## Install via npm
 
 ```bash
@@ -360,31 +361,13 @@ npm install -g aether-ai
 aether-ai "your prompt"
 ```
 
-The package is published on npm: [npmjs.com/package/aether](https://www.npmjs.com/package/aether-ai).
-
-## Install
-
-Install the Aether CLI globally:
-
-bash
-npm install -g aether-ai
-
-
+The package is published on npm: [npmjs.com/package/aether-ai](https://www.npmjs.com/package/aether-ai).
 
 ## Publishing
 
-Aether is published on npm as **`aether-ai`**. Install it globally with:
+Aether is published on npm as **`aether-ai`**. New versions are published automatically by a GitHub Actions workflow using npm **Trusted Publishing**. There is no npm token to manage — GitHub Actions authenticates to npm via OpenID Connect.
 
-```bash
-npm install -g aether-ai
-aether-ai "your prompt"
-```
-
-Package page: [npmjs.com/package/aether-ai](https://www.npmjs.com/package/aether-ai).
-
-### Trusted Publishing (OIDC � no token needed)
-
-New versions are published automatically by a GitHub Actions workflow using npm **Trusted Publishing**. There is no npm token to manage � GitHub Actions authenticates to npm via OpenID Connect.
+### Trusted Publishing (OIDC - no token needed)
 
 To release a new version:
 
