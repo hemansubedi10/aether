@@ -1,6 +1,6 @@
 {
   "name": "@hemansubedi/aether-ai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The Aether CLI: the free, unlimited, multi-provider LLM CLI - install like KiloCode, run like Claude Code.",
   "type": "module",
   "main": "dist/index.js",
@@ -13,8 +13,18 @@
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts"
   },
-  "engines": { "node": ">=20" },
-  "keywords": ["llm", "cli", "ai", "router", "ollama", "openrouter", "free"],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "llm",
+    "cli",
+    "ai",
+    "router",
+    "ollama",
+    "openrouter",
+    "free"
+  ],
   "author": "Heman Subedi <hemansubedi66@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/hemansubedi10/aether",
