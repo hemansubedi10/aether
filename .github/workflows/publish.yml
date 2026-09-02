@@ -29,6 +29,16 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Strip empty _authToken from npmrc
+        # actions/setup-node with registry-url writes
+        # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` to the npmrc.
+        # With no NODE_AUTH_TOKEN secret (correct for Trusted Publishing) the
+        # placeholder expands to empty, npm treats it as "auth configured" and
+        # never triggers the OIDC exchange -> ENEEDAUTH. Strip the line so OIDC kicks in.
+        run: |
+          npmrc="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          sed -i '/_authToken/d' "$npmrc"
+
       - name: Publish
         # Trusted Publishing: no NPM_TOKEN needed, OIDC id-token handles auth.
         run: npm publish --access public
