@@ -1,4 +1,4 @@
-  _   _      _      __  __  ___  
+_   _      _      __  __  ___
  | \ | |    / \    |  \/  |/ _ \
  |  \| |   / _ \   | |\/| | | | |
  | |\  |  / ___ \  | |  | | |_| |
@@ -17,7 +17,7 @@
 
 **An advanced, free, unlimited LLM CLI agent with multi-provider routing, automatic failover, and agentic tool use.**
 
-Aether is a Claude Code / Kilo-class AI agent for your terminal. It unifies every model behind one interface — local Ollama models, OpenRouter free-tier, and any OpenAI-compatible endpoint — so you can switch models on the fly without changing your workflow. It runs fully local with **zero token limits and zero cost**, tracks provider health with a circuit breaker, and drives real tools (read, write, edit, glob, grep, bash, git, web search, and vision) in an agentic loop. No API keys required to get started.
+Aether is a Claude Code / Kilo-class AI agent for your terminal. It unifies every model behind one interface â€” local Ollama models, OpenRouter free-tier, and any OpenAI-compatible endpoint â€” so you can switch models on the fly without changing your workflow. It runs fully local with **zero token limits and zero cost**, tracks provider health with a circuit breaker, and drives real tools (read, write, edit, glob, grep, bash, git, web search, and vision) in an agentic loop. No API keys required to get started.
 
 ## What is Aether?
 
@@ -31,39 +31,39 @@ Aether is a TypeScript CLI agent that turns your terminal into an autonomous cod
 
 | Feature | Description |
 |---------|-------------|
-| **?? Multi-provider routing** | One unified interface over Ollama, OpenRouter free-tier, and any OpenAI-compatible endpoint. Switch with `/model` and `/provider`. |
-| **??? Automatic failover** | If a provider throws, the router records the failure and moves to the next enabled provider. A single consolidated error is yielded only if every provider is down. |
-| **?? Circuit breaker health tracking** | Per-provider health state: failures, last check, circuit open/closed, and cooldown. `/providers` shows live status. |
-| **?? Agentic tool loop** | The model drives tools until it stops requesting them: `read_file`, `write_file`, `edit_file`, `list_dir`, `bash`, `glob`, `grep`, `web_search`, `vision`, and `git`. |
-| **?? Streaming TUI** | A ChatGPT-style terminal interface with streaming output, conversation history, regenerate, and side-by-side model comparison. |
-| **?? Persistent memory** | Long-term memory stored on disk so the agent remembers you across sessions. |
-| **?? Plan / Yolo modes** | `--plan` for step-by-step approval, `--yolo` for autonomous execution. |
-| **?? Token & cost tracker** | Per-provider, per-model request, input/output token counts, and estimated USD cost. `/cost` and `/reset-cost`. |
-| **?? Tournament arena with Elo** | Blind A/B voting between models with Elo ranking and a leaderboard. `/arena`. |
-| **? Custom slash commands (skills)** | Drop `.md` files in `~/.aether/skills/` to define reusable commands. `/skills` and `/skill <name>`. |
-| **?? Checkpoint / undo** | Snapshot file state before edits so you can roll back. |
-| **?? Session persistence** | Save, load, list, and clear named sessions as JSON under `~/.aether/sessions/`. |
+| ğŸ”€ **Multi-provider routing** | One unified interface over Ollama, OpenRouter free-tier, and any OpenAI-compatible endpoint. Switch with `/model` and `/provider`. |
+| âš¡ **Automatic failover** | If a provider throws, the router records the failure and moves to the next enabled provider. A single consolidated error is yielded only if every provider is down. |
+| ğŸ›¡ï¸ **Circuit breaker health tracking** | Per-provider health state: failures, last check, circuit open/closed, and cooldown. `/providers` shows live status. |
+| ğŸ”§ **Agentic tool loop** | The model drives tools until it stops requesting them: `read_file`, `write_file`, `edit_file`, `list_dir`, `bash`, `glob`, `grep`, `web_search`, `vision`, and `git`. |
+| ğŸ’¬ **Streaming TUI** | A ChatGPT-style terminal interface with streaming output, conversation history, regenerate, and side-by-side model comparison. |
+| ğŸ§  **Persistent memory** | Long-term memory stored on disk so the agent remembers you across sessions. |
+| ğŸ¯ **Plan / Yolo modes** | `--plan` for step-by-step approval, `--yolo` for autonomous execution. |
+| ğŸ’° **Token & cost tracker** | Per-provider, per-model request, input/output token counts, and estimated USD cost. `/cost` and `/reset-cost`. |
+| ğŸ† **Tournament arena with Elo** | Blind A/B voting between models with Elo ranking and a leaderboard. `/arena`. |
+| âš™ï¸ **Custom slash commands (skills)** | Drop `.md` files in `~/.aether/skills/` to define reusable commands. `/skills` and `/skill <name>`. |
+| â†ºï¸ **Checkpoint / undo** | Snapshot file state before edits so you can roll back. |
+| ğŸ’¾ **Session persistence** | Save, load, list, and clear named sessions as JSON under `~/.aether/sessions/`. |
 
 ## Terminal Preview
 
 ```text
 +- Aether --------------------------------------------------+
-¦                                                             ¦
-¦  ollama-local · qwen2.5-coder:7b                           ¦
-¦                                                             ¦
-¦  ? Build a REST API in Node.js with CRUD endpoints          ¦
-¦                                                             ¦
-¦  ? [tool: read_file] src/index.ts                           ¦
-¦  ? [tool: glob] src/**/*.ts                                 ¦
-¦  ? [tool: edit_file] src/index.ts                           ¦
-¦  ?                                                           ¦
-¦  Here's a complete REST API with CRUD endpoints...          ¦
-¦                                                             ¦
-¦  ? Created src/routes/users.ts                              ¦
-¦  ? Created src/routes/posts.ts                              ¦
-¦  ? Created tests/routes/users.test.ts                       ¦
-¦                                                             ¦
-¦  ? _                                                         ¦
+Â¦                                                             Â¦
+Â¦  ollama-local Â· qwen2.5-coder:7b                           Â¦
+Â¦                                                             Â¦
+Â¦  ? Build a REST API in Node.js with CRUD endpoints          Â¦
+Â¦                                                             Â¦
+Â¦  ? [tool: read_file] src/index.ts                           Â¦
+Â¦  ? [tool: glob] src/**/*.ts                                 Â¦
+Â¦  ? [tool: edit_file] src/index.ts                           Â¦
+Â¦  ?                                                           Â¦
+Â¦  Here's a complete REST API with CRUD endpoints...          Â¦
+Â¦                                                             Â¦
+Â¦  ? Created src/routes/users.ts                              Â¦
+Â¦  ? Created src/routes/posts.ts                              Â¦
+Â¦  ? Created tests/routes/users.test.ts                       Â¦
+Â¦                                                             Â¦
+Â¦  ? _                                                         Â¦
 +-------------------------------------------------------------+
 ```
 
@@ -98,7 +98,7 @@ one degrades...
 
 ## Getting Started
 
-Aether is TypeScript and runs via `tsx` — zero runtime dependencies.
+Aether is TypeScript and runs via `tsx` â€” zero runtime dependencies.
 
 ```bash
 git clone https://github.com/hemansubedi10/aether.git
@@ -116,15 +116,15 @@ AETHER_PROVIDER=ollama-local AETHER_MODEL=qwen2.5-coder:7b \
 
 ## Providers
 
-- **Ollama local** — unlimited, no token limits, no auth. Make sure Ollama is running and the models are pulled.
-- **OpenRouter free-tier** — access free models on the OpenRouter network.
-- **OpenAI-compatible** — point at any OpenAI-compatible endpoint.
+- **Ollama local** â€” unlimited, no token limits, no auth. Make sure Ollama is running and the models are pulled.
+- **OpenRouter free-tier** â€” access free models on the OpenRouter network.
+- **OpenAI-compatible** â€” point at any OpenAI-compatible endpoint.
 
 Configure providers in your Aether config; priority order and enable/disable are all configurable.
 
 ## Why Aether?
 
-| | Claude Code / Kilo | Aether |
+| Claude Code / Kilo | Aether |
 |---|---|---|
 | **Cost** | Paid API usage | **Free & unlimited** via local Ollama |
 | **Provider lock-in** | One vendor | **Multi-provider** with automatic failover |
