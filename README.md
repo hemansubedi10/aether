@@ -119,6 +119,7 @@ Aether is three layers that talk to each other: your prompt flows from the CLI, 
 
 ## Getting Started
 
+```text
 # One-line run (uses tsx, no install needed):
 npx tsx src/index.ts "your prompt here"
 
@@ -129,11 +130,13 @@ npx tsx src/index.ts "hello world"
 
 # Interactive TUI (Claude Code / ChatGPT style):
 npx tsx src/index.ts
+```
 
 ## Connect Cloud Providers
 
 Cloud providers need an API key. Local Ollama works with no key, but cloud providers need free API keys. There are two methods:
 
+```text
 # Method A: environment variables (temporary, per-session)
 export OPENROUTER_API_KEY="sk-or-..."
 export GROQ_API_KEY="gsk_..."
@@ -143,6 +146,7 @@ npx tsx src/index.ts "ask groq something"
 npx tsx src/index.ts /connect openrouter-free sk-or-...
 npx tsx src/index.ts /connect groq gsk_...
 npx tsx src/index.ts /keys        # list what's connected
+```
 
 ## Free API Keys
 
