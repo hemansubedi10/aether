@@ -1,49 +1,62 @@
 ﻿{
-    "name":  "aether",
-    "version":  "1.0.0",
-    "description":  "Advanced free LLM CLI agent with multi-provider routing, failover, and agentic tool use.",
-    "type":  "module",
-    "main":  "src/index.ts",
-    "bin":  {
-                "aether":  "src/index.ts",
-                "aether-server":  "src/server.ts"
-            },
-    "scripts":  {
-                    "start":  "tsx src/index.ts",
-                    "dev":  "tsx src/index.ts",
-                    "stats":  "tsx src/index.ts /stats",
-                    "build":  "tsc"
-                },
-    "keywords":  [
-                     "ai",
-                     "agent",
-                     "llm",
-                     "cli",
-                     "ollama",
-                     "openrouter",
-                     "openai",
-                     "typescript",
-                     "coding-agent",
-                     "multi-provider",
-                     "failover"
-                 ],
-    "engines":  {
-                    "node":  "\u003e=20"
-                },
-    "dependencies":  {
-
-                     },
-    "author":  {
-                   "name":  "Hemansubedi10",
-                   "email":  "hemansubedi10@gmail.com",
-                   "url":  "https://github.com/hemansubedi10"
-               },
-    "homepage":  "https://github.com/hemansubedi10/aether#readme",
-    "repository":  {
-                       "type":  "git",
-                       "url":  "git+https://github.com/hemansubedi10/aether.git"
-                   },
-    "bugs":  {
-                 "url":  "https://github.com/hemansubedi10/aether/issues"
-             }
+  "name": "aether",
+  "version": "1.0.0",
+  "description": "Advanced free LLM CLI agent with multi-provider routing, failover, and agentic tool use.",
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": {
+    "aether": "src/index.ts",
+    "aether-server": "src/server.ts"
+  },
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx src/index.ts",
+    "stats": "tsx src/index.ts /stats",
+    "build": "tsc"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "llm",
+    "cli",
+    "ollama",
+    "openrouter",
+    "openai",
+    "typescript",
+    "coding-agent",
+    "multi-provider",
+    "failover"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "typescript": "^5.7.0",
+    "tsx": "^4.19.0",
+    "@types/node": "^22.0.0"
+  },
+  "install": "bash install.sh (macOS/Linux) or powershell -ExecutionPolicy Bypass -File install.ps1 (Windows). Requires Node.js >= 20.",
+  "files": [
+    "src",
+    "tsconfig.json",
+    "README.md",
+    "INSTALL.md",
+    "LICENSE",
+    "install.sh",
+    "install.ps1",
+    "package.json"
+  ],
+  "author": {
+    "name": "Hemansubedi10",
+    "email": "hemansubedi10@gmail.com",
+    "url": "https://github.com/hemansubedi10"
+  },
+  "homepage": "https://github.com/hemansubedi10/aether#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hemansubedi10/aether.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hemansubedi10/aether/issues"
+  }
 }
