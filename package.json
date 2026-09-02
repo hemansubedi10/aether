@@ -5,7 +5,9 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
+    "aether": "dist/index.js",
     "aether-ai": "dist/index.js",
+    "aether-server": "dist/server.js",
     "aether-ai-server": "dist/server.js"
   },
   "scripts": {
