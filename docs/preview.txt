@@ -12,6 +12,7 @@ Commands:
   /settings [set <key> <value> | reset] - View or modify settings
   /stats - Show session stats, cost summary, and provider health
   /quit - Exit the TUI
+  /reset-health - Reset health state for all providers
   /skills - List available custom skills
   /skill <name> [args] - Run a custom skill
 
@@ -29,4 +30,18 @@ Provider  Model  Requests  Input Tok  Output Tok  Cost (USD)
 Provider health:
   ollama-local: unhealthy (fetch failed)
   openrouter-free: healthy
-  openai-compatible: unhealthy (HTTP 401)
+  groq: unhealthy (HTTP 401)
+  mistral: unhealthy (fetch failed)
+  cohere: unhealthy (HTTP 401)
+  huggingface: unhealthy (fetch failed)
+  fireworks: unhealthy (HTTP 401)
+  together: unhealthy (HTTP 401)
+  deepseek: unhealthy (HTTP 401)
+  gemini: unhealthy (HTTP 404)
+  xai: unhealthy (HTTP 401)
+  perplexity: unhealthy (HTTP 404)
+  cerebras: unhealthy (HTTP 403)
+  nvidia: healthy
+  jina: healthy
+  parasail: unhealthy (fetch failed)
+  featherless: unhealthy (HTTP 404)
