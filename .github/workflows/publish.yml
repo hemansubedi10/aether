@@ -13,13 +13,6 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env:
-      # A repo-level NODE_AUTH_TOKEN secret (legacy npm token) is present. npm
-      # prefers token auth over OIDC trusted publishing whenever one exists, so
-      # the OIDC exchange never runs and publish fails with ENEEDAUTH. Unset it
-      # (and the _authToken line it writes to the npmrc) so npm falls back to
-      # the GitHub OIDC id-token flow.
-      NODE_AUTH_TOKEN: ''
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,25 +21,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          registry-url: 'https://registry.npmjs.org/'
+          # NOTE: deliberately no registry-url. With registry-url set,
+          # actions/setup-node injects NODE_AUTH_TOKEN (from the automatic
+          # GITHUB_TOKEN) into the job env for all later steps and writes a
+          # `_authToken=` line to the npmrc. npm then prefers that token over
+          # the OIDC trusted-publishing exchange and fails with ENEEDAUTH.
+          # npm's default registry is already https://registry.npmjs.org/.
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build
         run: npm run build
-
-      - name: Strip empty _authToken from npmrc
-        # actions/setup-node with registry-url writes
-        # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` to the npmrc.
-        # With NODE_AUTH_TOKEN emptied above the placeholder expands to empty,
-        # npm treats it as "auth configured" and never triggers the OIDC
-        # exchange -> ENEEDAUTH. Strip the line so OIDC kicks in.
-        run: |
-          npmrc="${NPM_CONFIG_USERCONFIG:-$RUNNER_TEMP/.npmrc}"
-          if [ -f "$npmrc" ]; then
-            sed -i '/_authToken/d' "$npmrc"
-          fi
 
       - name: Publish
         # Trusted Publishing: no NPM_TOKEN needed, OIDC id-token handles auth.
