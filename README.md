@@ -43,6 +43,36 @@ Aether is a TypeScript CLI agent that turns your terminal into an autonomous cod
 
 Aether installs like KiloCode and runs like Claude Code. One line, no setup beyond Node.js 20+.
 
+### CLI flags
+
+`aether-ai` understands standard flags before the prompt:
+
+| Flag | Description |
+|------|-------------|
+| `-v`, `--version` | Print the version (`aether-ai 1.0.0`) and exit |
+| `-h`, `--help` | Print the help text (same as `/help`) and exit |
+| `--plan` | Start in plan mode (step-by-step approval) |
+| `--yolo` | Start in yolo mode (autonomous execution) |
+| `--no-stream` | Disable streaming output in one-shot mode |
+
+```text
+$ aether-ai --version
+aether-ai 1.0.0
+
+$ aether-ai --help
+Aether - the free, unlimited, multi-provider LLM CLI
+
+Usage: aether-ai [options] [prompt]
+
+Options:
+  -h, --help        Show this help text and exit
+  -v, --version     Print the version and exit
+  --plan            Run in plan mode (step-by-step approval)
+  --yolo            Run in yolo mode (autonomous execution)
+  --no-stream       Disable streaming output in one-shot mode
+```
+
+Flags are parsed from `process.argv` before the remaining args are treated as the prompt, so `aether-ai --yolo "fix the tests"` runs the prompt in yolo mode.
 ### Install
 
 | Platform | Command |

@@ -179,12 +179,49 @@ import { Checkpoint } from "./checkpoint.js";
 import { Skills } from "./skills.js";
 
 // CLI entrypoint
-function isMainModule(): boolean {
-  // Robust across tsx/Node and Windows path formatting.
+const VERSION = "1.0.0";
+
+function getHelpText() {
+  const lines = [];
+  lines.push("Aether - the free, unlimited, multi-provider LLM CLI");
+  lines.push("");
+  lines.push("Usage: aether-ai [options] [prompt]");
+  lines.push("");
+  lines.push("Options:");
+  lines.push("  -h, --help        Show this help text and exit");
+  lines.push("  -v, --version     Print the version and exit");
+  lines.push("  --plan            Run in plan mode (step-by-step approval)");
+  lines.push("  --yolo            Run in yolo mode (autonomous execution)");
+  lines.push("  --no-stream       Disable streaming output in one-shot mode");
+  lines.push("");
+  lines.push("Commands (prefix a prompt with /):");
+  lines.push("  /help             Show all available commands");
+  lines.push("  /model <name>     Switch the active model");
+  lines.push("  /provider <name>  Switch the active provider");
+  lines.push("  /models           List all available models across providers");
+  lines.push("  /providers        Show provider health status");
+  lines.push("  /combo ...        Manage named provider/model combos");
+  lines.push("  /session ...      Manage sessions");
+  lines.push("  /arena            Enter arena mode (compare models)");
+  lines.push("  /cost             Show token usage and estimated cost summary");
+  lines.push("  /stats            Show session stats, cost summary, and provider health");
+  lines.push("  /skills           List available custom skills");
+  lines.push("  /connect ...      Connect an API key for a provider");
+  lines.push("  /exit             Exit the TUI");
+  lines.push("");
+  lines.push("When no prompt is given, Aether starts an interactive TUI.");
+  return lines.join("\n");
+}
+
+function isMainModule() {
+  // Robust across tsx/Node and Windows path formatting. The compiled bin is
+  // dist/index.js; tsx may also hand us src/index.ts directly.
   const self = import.meta.url.replace(/\/$/g, "");
   const argv1 = "file://" + path.resolve(process.argv[1] ?? "");
   if (self === argv1) return true;
-  // Also match when invoked via `tsx` where argv may be a .ts source file.
+  const binNames = ["dist/index.js", "src/index.ts"];
+  if (binNames.includes(path.basename(process.argv[1] ?? ""))) return true;
+  // Also match when invoked via tsx where argv may be a .ts source file.
   try {
     const selfPath = new URL(self).pathname;
     const argvPath = path.resolve(process.argv[1] ?? "");
@@ -197,15 +234,24 @@ function isMainModule(): boolean {
 }
 
 if (isMainModule()) {
-  // Parse CLI flags: --plan and --yolo set the agent mode and are stripped
-  // from the prompt args.
-  let modeFlag: string | null = null;
-  const promptArgs: string[] = [];
+  // Parse CLI flags: --plan, --yolo, --no-stream, --version and --help are
+  // consumed here and stripped from the prompt args.
+  let modeFlag = null;
+  let noStream = false;
+  const promptArgs = [];
   for (const arg of process.argv.slice(2)) {
     if (arg === "--plan") {
       modeFlag = "plan";
     } else if (arg === "--yolo") {
       modeFlag = "yolo";
+    } else if (arg === "--no-stream") {
+      noStream = true;
+    } else if (arg === "--version" || arg === "-v") {
+      process.stdout.write("aether-ai " + VERSION + "\n");
+      process.exit(0);
+    } else if (arg === "--help" || arg === "-h") {
+      process.stdout.write(getHelpText() + "\n");
+      process.exit(0);
     } else {
       promptArgs.push(arg);
     }
