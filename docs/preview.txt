@@ -17,21 +17,16 @@ Commands:
 
 
 === /stats ===
-
 Session:
   messages: 0 (user: 0, assistant: 0, tool: 0)
 
 Cost:
-Provider           Model                                Requests  Input Tok  Output Tok  Cost (USD)
------------------  -----------------------------------  --------  ---------  ----------  ----------
-openai-compatible  gpt-4o-mini                          1         1000       500         0.005000  
-openrouter-free    mistral:7b                           2         150        300         0.000000  
-unknown            goekdenizguelmez/JOSIEFIED-Qwen3:8b  3         2744       3596        0.000000  
-ollama-local       goekdenizguelmez/JOSIEFIED-Qwen3:8b  7         6085       4007        0.000000  
-ollama-local       default                              14        17623      7574        0.000000  
-                                                                             Total       0.005000  
+Provider  Model  Requests  Input Tok  Output Tok  Cost (USD)
+--------  -----  --------  ---------  ----------  ----------
+-         -      -         -          -           -         
+                                      Total       0.000000  
 
 Provider health:
-  ollama-local: healthy
+  ollama-local: unhealthy (fetch failed)
   openrouter-free: healthy
   openai-compatible: unhealthy (HTTP 401)
