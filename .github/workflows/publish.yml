@@ -22,9 +22,12 @@ jobs:
         with:
           node-version: 24
 
-      - name: Dump raw OIDC response
+      - name: Decode OIDC JWT claims
         run: |
-          echo "URL=$ACTIONS_ID_TOKEN_REQUEST_URL"
-          echo "TOKEN_LEN=${#ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
-          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL?audience=https://registry.npmjs.org/" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>process.stdout.write(s.slice(0,500)))"
-          echo
+          curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL?audience=https://registry.npmjs.org/" | node -e "
+            let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{
+              const jwt = JSON.parse(s).value;
+              const payload = JSON.parse(Buffer.from(jwt.split('.')[1], 'base64').toString());
+              console.log(JSON.stringify(payload, null, 2));
+            });
+          "
