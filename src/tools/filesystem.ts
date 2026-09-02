@@ -2,6 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { execSync } from "node:child_process";
 import type { ToolDef } from "../types.js";
+import { Checkpoint } from "../checkpoint.js";
 
 export interface ToolFactory {
   def: ToolDef;
@@ -82,6 +83,7 @@ export function makeWriteFileTool(rootDir: string): ToolFactory {
         return `ERROR: path "${rel}" escapes the project root`;
       }
       try {
+        try { Checkpoint.instance().autoCheckpoint(rootDir, rel); } catch {}
         const parent = path.dirname(target);
         fs.mkdirSync(parent, { recursive: true });
         fs.writeFileSync(target, content, "utf8");
@@ -122,6 +124,7 @@ export function makeEditFileTool(rootDir: string): ToolFactory {
         if (!fs.existsSync(target)) {
           return `ERROR: file not found: ${rel}`;
         }
+        try { Checkpoint.instance().autoCheckpoint(rootDir, rel); } catch {}
         const original = fs.readFileSync(target, "utf8");
         const first = original.indexOf(oldText);
         if (first === -1) {
@@ -200,7 +203,7 @@ function walk(dir: string, prefix: string, lines: string[]): void {
     const connector = isLast ? "+-- " : "+-- ";
     lines.push(`${prefix}${connector}${entry.name}`);
     if (entry.isDirectory()) {
-      walk(path.join(dir, entry.name), prefix + (isLast ? "    " : "¦   "), lines);
+      walk(path.join(dir, entry.name), prefix + (isLast ? "    " : "ï¿½   "), lines);
     }
   });
 }

@@ -9,6 +9,7 @@ import { makeGlobTool } from "./tools/glob.js";
 import { makeGrepTool } from "./tools/grep.js";
 import { makeWebSearchTool } from "./tools/websearch.js";
 import { makeVisionTool } from "./tools/vision.js";
+import { makeGitTool } from "./tools/git.js";
 import { Agent } from "./agent.js";
 import { Session } from "./session.js";
 import { Arena } from "./arena.js";
@@ -54,6 +55,7 @@ export function createAgent(rootDir: string = process.cwd()): Agent {
     makeGrepTool,
     makeWebSearchTool,
     makeVisionTool,
+    makeGitTool,
   ];
   for (const make of factories) {
     const tool = make(rootDir);
@@ -68,7 +70,7 @@ export function createTUIContext(rootDir: string = process.cwd()) {
   const cfg = getConfig();
   const router = new Router(cfg.providers, new HealthTracker());
   const registry = new ToolRegistry();
-  for (const make of [makeReadFileTool, makeWriteFileTool, makeEditFileTool, makeListDirTool, makeBashTool, makeGlobTool, makeGrepTool, makeWebSearchTool, makeVisionTool]) {
+  for (const make of [makeReadFileTool, makeWriteFileTool, makeEditFileTool, makeListDirTool, makeBashTool, makeGlobTool, makeGrepTool, makeWebSearchTool, makeVisionTool, makeGitTool]) {
     const tool = make(rootDir);
     registry.register(tool.def, tool.execute);
   }
@@ -77,11 +79,16 @@ export function createTUIContext(rootDir: string = process.cwd()) {
   const arena = new Arena(router);
   const costTracker = CostTracker.load();
   const settings = Settings.load();
-  const tui = createTUI({ agent, router, session, arena, costTracker, settings });
+  const skills = Skills.instance();
+  const checkpoint = Checkpoint.instance();
+  const tui = createTUI({ agent, router, session, arena, costTracker, settings, skills, checkpoint });
   return { agent, router, session, arena, costTracker, settings, tui };
 }
 
-export { Router, HealthTracker, getConfig, Agent, ToolRegistry, Session, Arena, createTUI, Memory, ModeManager, CostTracker };
+export { Router, HealthTracker, getConfig, Agent, ToolRegistry, Session, Arena, createTUI, Memory, ModeManager, CostTracker, GitTool, Checkpoint, Skills };
+import { GitTool } from "./git.js";
+import { Checkpoint } from "./checkpoint.js";
+import { Skills } from "./skills.js";
 
 // CLI entrypoint
 function isMainModule(): boolean {

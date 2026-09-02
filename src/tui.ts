@@ -13,6 +13,8 @@ import { HealthTracker } from "./health.js";
 import { ToolRegistry } from "./tools/registry.js";
 import type { CostTracker } from "./cost.js";
 import type { Settings } from "./settings.js";
+import type { Skills } from "./skills.js";
+import type { Checkpoint } from "./checkpoint.js";
 import {
   makeReadFileTool,
   makeWriteFileTool,
@@ -54,7 +56,7 @@ const BG = {
   darkGray: `\u001b[100m`,
 };
 
-const SPINNER = ['¦', '?', '?', '?', '?', '?'];
+const SPINNER = ['ï¿½', '?', '?', '?', '?', '?'];
 
 interface Msg {
   role: "user" | "assistant" | "system" | "tool";
@@ -67,6 +69,8 @@ export class TUI {
   readonly session: Session;
   readonly arena: Arena;
   readonly costTracker?: CostTracker;
+  readonly skills?: Skills;
+  readonly checkpoint?: Checkpoint;
   readonly settings?: Settings;
 
   private rl: readline.Interface;
@@ -89,6 +93,8 @@ export class TUI {
     session: Session;
     arena: Arena;
     costTracker?: CostTracker;
+    skills?: Skills;
+    checkpoint?: Checkpoint;
     settings?: Settings;
   }) {
     this.agent = opts.agent;
@@ -96,6 +102,8 @@ export class TUI {
     this.session = opts.session;
     this.arena = opts.arena;
     this.costTracker = opts.costTracker;
+    this.skills = opts.skills;
+    this.checkpoint = opts.checkpoint;
     this.settings = opts.settings;
 
     this.isTty = Boolean(process.stdin.isTTY && process.stdout.isTTY);
@@ -628,6 +636,8 @@ export function createTUI(opts: {
   session: Session;
   arena: Arena;
   costTracker?: CostTracker;
+  skills?: Skills;
+  checkpoint?: Checkpoint;
   settings?: Settings;
 }): TUI {
   return new TUI(opts);
