@@ -21,19 +21,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          # NOTE: deliberately no registry-url. With registry-url set,
-          # actions/setup-node injects NODE_AUTH_TOKEN (from the automatic
-          # GITHUB_TOKEN) into the job env for all later steps and writes a
-          # `_authToken=` line to the npmrc. npm then prefers that token over
-          # the OIDC trusted-publishing exchange and fails with ENEEDAUTH.
-          # npm's default registry is already https://registry.npmjs.org/.
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Publish
-        # Trusted Publishing: no NPM_TOKEN needed, OIDC id-token handles auth.
-        run: npm publish --access public
+      - name: Decode OIDC token claims
+        run: |
+          TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL?audience=https://registry.npmjs.org/" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{console.log(JSON.stringify(JSON.parse(s).value||s))}catch(e){console.log(s)}})")
+          echo "$TOKEN" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const p=JSON.parse(s);console.log('repository='+p.repository);console.log('repository_owner='+p.repository_owner);console.log('repository_owner_id='+p.repository_owner_id);console.log('workflow='+p.workflow);console.log('ref='+p.ref);console.log('sha='+p.sha);console.log('actor='+p.actor);console.log('audience='+p.audience);console.log('issuer='+p.iss);console.log('exp='+p.exp);})"
