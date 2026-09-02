@@ -179,7 +179,9 @@ import { Checkpoint } from "./checkpoint.js";
 import { Skills } from "./skills.js";
 
 // CLI entrypoint
-const VERSION = "1.0.0";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const VERSION: string = require("../package.json").version;
 
 function getHelpText() {
   const lines = [];
