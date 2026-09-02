@@ -11,10 +11,14 @@ Commands:
   /reset-cost - Reset cost and token counters
   /settings [set <key> <value> | reset] - View or modify settings
   /stats - Show session stats, cost summary, and provider health
+  /combo list | create <name> [provider...] | select <name> | delete <name> - Manage provider/model combos
   /quit - Exit the TUI
   /reset-health - Reset health state for all providers
   /skills - List available custom skills
   /skill <name> [args] - Run a custom skill
+  /connect <provider> <api_key> - Connect an API key for a provider
+  /keys - List which providers have API keys configured
+  /disconnect <provider> - Remove an API key
 
 
 === /stats ===
