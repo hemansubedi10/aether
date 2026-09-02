@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          registry: 'https://registry.npmjs.org/'
+          registry-url: 'https://registry.npmjs.org/'
 
       - name: Install dependencies
         run: npm ci
@@ -29,18 +29,26 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Debug npmrc and OIDC env
+        run: |
+          echo "=== NPM_CONFIG_USERCONFIG=$NPM_CONFIG_USERCONFIG ==="
+          echo "=== RUNNER_TEMP=$RUNNER_TEMP ==="
+          echo "=== ACTIONS_ID_TOKEN_REQUEST_URL=$ACTIONS_ID_TOKEN_REQUEST_URL ==="
+          echo "=== npmrc files ==="
+          ls -la "$NPM_CONFIG_USERCONFIG" "$RUNNER_TEMP/.npmrc" "$HOME/.npmrc" 2>&1
+          echo "=== contents of NPM_CONFIG_USERCONFIG ==="
+          cat "$NPM_CONFIG_USERCONFIG" 2>&1
+          echo "=== npm config list ==="
+          npm config list 2>&1
+
       - name: Strip empty _authToken from npmrc
-        # actions/setup-node with registry-url writes
-        # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` to the npmrc.
-        # With no NODE_AUTH_TOKEN secret (correct for Trusted Publishing) the
-        # placeholder expands to empty, npm treats it as "auth configured" and
-        # never triggers the OIDC exchange -> ENEEDAUTH. Strip the line so OIDC kicks in.
         run: |
           npmrc="${NPM_CONFIG_USERCONFIG:-$RUNNER_TEMP/.npmrc}"
           if [ -f "$npmrc" ]; then
             sed -i '/_authToken/d' "$npmrc"
           fi
+          echo "=== after strip ==="
+          cat "$npmrc" 2>&1
 
       - name: Publish
-        # Trusted Publishing: no NPM_TOKEN needed, OIDC id-token handles auth.
         run: npm publish --access public
