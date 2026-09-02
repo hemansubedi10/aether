@@ -324,6 +324,15 @@ export const CommandHandler: Record<string, CommandHandler> = {
     },
   },
 
+
+  "reset-health": {
+    help: "/reset-health - Reset health state for all providers",
+    run: (_args, ctx) => {
+      ctx.router.resetHealth();
+      ctx.tui.showSystem("Health state reset for all providers.");
+    },
+  },
+
   skills: {
     help: "/skills - List available custom skills",
     run: (_args, ctx) => {

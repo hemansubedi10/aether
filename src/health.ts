@@ -83,4 +83,8 @@ export class HealthTracker {
     s.cooldownUntil = 0;
     s.lastError = undefined;
   }
+
+  resetAll(): void {
+    this.map.clear();
+  }
 }

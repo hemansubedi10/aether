@@ -9,6 +9,7 @@ function estimateTokens(text: string): number {
 export class OllamaProvider implements Provider {
   readonly name: string;
   readonly config: ProviderConfig;
+  private resolvedModel?: string;
 
   constructor(config: ProviderConfig) {
     this.name = config.name;
@@ -31,32 +32,55 @@ export class OllamaProvider implements Provider {
   }
 
   /**
-   * Resolve the actual model to use for a request. If the configured model
-   * (config.models[0]) is installed locally, use it; otherwise fall back to
-   * the first installed model. This keeps the CLI working even when the
-   * default config references a model that isn't present.
+   * Query /api/tags and return the installed models together with their
+   * Ollama-reported capabilities (e.g. ["completion","tools","vision"]).
    */
-  async resolveModel(): Promise<string> {
-    const configured = this.config.models[0];
-    if (configured) {
-      try {
-        const installed = await this.listModels();
-        if (installed.length === 0) return configured;
-        if (installed.includes(configured)) return configured;
-        // Configured model not installed: fall back to the first installed one.
-        return installed[0];
-      } catch {
-        return configured;
-      }
-    }
-    // No configured model: pick the first installed, else a sane default.
+  async listModelsWithCapabilities(): Promise<Map<string, string[]>> {
+    const out = new Map<string, string[]>();
     try {
-      const installed = await this.listModels();
-      if (installed.length > 0) return installed[0];
+      const res = await fetchWithTimeout(`${this.base}/api/tags`, {}, this.config.timeoutMs);
+      if (!res.ok) return out;
+      const data = (await res.json()) as any;
+      for (const m of data?.models ?? []) {
+        const name = m?.name;
+        if (!name) continue;
+        const caps = Array.isArray(m?.capabilities) ? m.capabilities.map(String) : [];
+        out.set(name, caps);
+      }
     } catch {
       // ignore
     }
-    return "aether";
+    return out;
+  }
+
+  /**
+   * Resolve the actual model to use for a request.
+   *
+   * 1. If the configured model (config.models[0]) is installed locally, use it.
+   * 2. Otherwise fall back to the first installed model that supports tools
+   *    (its capabilities include "tools") — this is what lets the agent call
+   *    tools without failing over to cloud providers.
+   * 3. If no installed model supports tools, fall back to the first installed
+   *    model, else a sane default.
+   *
+   * The result is cached so /api/tags is only hit once per provider instance.
+   */
+  async resolveModel(): Promise<string> {
+    if (this.resolvedModel) return this.resolvedModel;
+    const configured = this.config.models[0];
+    const withCaps = await this.listModelsWithCapabilities();
+    const installed = Array.from(withCaps.keys());
+
+    let chosen: string;
+    if (configured && installed.includes(configured)) {
+      chosen = configured;
+    } else {
+      // Prefer a tool-capable installed model so the agent can call tools.
+      const toolCapable = installed.find((n) => (withCaps.get(n) ?? []).includes("tools"));
+      chosen = toolCapable ?? installed[0] ?? configured ?? "aether";
+    }
+    this.resolvedModel = chosen;
+    return chosen;
   }
 
   async health(): Promise<Omit<HealthStatus, "provider">> {

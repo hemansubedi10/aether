@@ -6,6 +6,8 @@ import type {
   ToolDef,
 } from "../types.js";
 
+export type { ProviderConfig };
+
 export interface Provider {
   readonly name: string;
   readonly config: ProviderConfig;

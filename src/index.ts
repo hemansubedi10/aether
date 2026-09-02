@@ -1,6 +1,6 @@
 import * as path from "node:path";
 import * as os from "node:os";
-import { Router } from "./router.js";
+import { RouterEngine } from "./router-engine.js";
 import { HealthTracker } from "./health.js";
 import { getConfig } from "./config.js";
 import { ToolRegistry } from "./tools/registry.js";
@@ -26,24 +26,48 @@ export async function runChat(
   opts?: { temperature?: number; maxTokens?: number; signal?: AbortSignal }
 ): Promise<{ text: string; toolCalls: any[]; usage?: { input_tokens: number; output_tokens: number } }> {
   const cfg = getConfig();
-  const router = new Router(cfg.providers, new HealthTracker());
+  const engine = new RouterEngine();
   let text = "";
   const toolCalls: any[] = [];
   let usage: ChatChunk["usage"];
-  for await (const chunk of router.chat(messages, tools, opts)) {
-    if (chunk.type === "text" && chunk.text) text += chunk.text;
-    if (chunk.type === "tool_call" && chunk.tool_call) toolCalls.push(chunk.tool_call);
-    if (chunk.type === "done") usage = chunk.usage;
-    if (chunk.type === "error") {
-      throw new Error(chunk.error || "router error");
-    }
+  try {
+    const result = await engine.chat(messages, tools, opts);
+    text = result.text;
+    toolCalls.push(...result.toolCalls);
+    usage = result.usage;
+  } catch (err) {
+    throw new Error((err as Error).message);
   }
   return { text, toolCalls, usage };
 }
 
+function makeRouterAdapter(engine: RouterEngine) {
+  const adapter: any = {
+    configs: engine.configs_,
+    activeProvider: undefined as string | undefined,
+    activeModel: undefined as string | undefined,
+    chat: (messages: any, tools: any, opts?: any) => engine.chatStream(messages, tools, opts),
+    select: () => null,
+    setActiveProvider: (n?: string) => { adapter.activeProvider = n; },
+    setActiveModel: (m: string) => { adapter.activeModel = m; },
+    getActiveProvider: () => adapter.activeProvider,
+    getActiveModel: () => adapter.activeModel,
+    getProviderNames: () => engine.configs_.filter((c: any) => c.enabled).map((c: any) => c.name),
+    getModelsFor: (name?: string) => {
+      const c = engine.configs_.find((cfg: any) => cfg.name === (name ?? adapter.activeProvider));
+      return c?.models ?? [];
+    },
+    listAllModels: () => engine.listFreeModels(),
+    healthAll: () => engine.healthAll(),
+    resetHealth: () => engine.resetHealth(),
+  };
+  return adapter;
+}
+
 export function createAgent(rootDir: string = process.cwd()): Agent {
   const cfg = getConfig();
-  const router = new Router(cfg.providers, new HealthTracker());
+  const engine = new RouterEngine();
+  const router = makeRouterAdapter(engine);
   const registry = new ToolRegistry();
   const factories = [
     makeReadFileTool,
@@ -68,7 +92,8 @@ export function createAgent(rootDir: string = process.cwd()): Agent {
 
 export function createTUIContext(rootDir: string = process.cwd()) {
   const cfg = getConfig();
-  const router = new Router(cfg.providers, new HealthTracker());
+  const engine = new RouterEngine();
+  const router = makeRouterAdapter(engine);
   const registry = new ToolRegistry();
   for (const make of [makeReadFileTool, makeWriteFileTool, makeEditFileTool, makeListDirTool, makeBashTool, makeGlobTool, makeGrepTool, makeWebSearchTool, makeVisionTool, makeGitTool]) {
     const tool = make(rootDir);
@@ -85,7 +110,7 @@ export function createTUIContext(rootDir: string = process.cwd()) {
   return { agent, router, session, arena, costTracker, settings, tui };
 }
 
-export { Router, HealthTracker, getConfig, Agent, ToolRegistry, Session, Arena, createTUI, Memory, ModeManager, CostTracker, GitTool, Checkpoint, Skills };
+export { RouterEngine, HealthTracker, getConfig, Agent, ToolRegistry, Session, Arena, createTUI, Memory, ModeManager, CostTracker, GitTool, Checkpoint, Skills };
 import { GitTool } from "./git.js";
 import { Checkpoint } from "./checkpoint.js";
 import { Skills } from "./skills.js";
