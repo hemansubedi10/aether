@@ -46,6 +46,6 @@ Provider health:
   perplexity: unhealthy (HTTP 404)
   cerebras: unhealthy (HTTP 403)
   nvidia: healthy
-  jina: healthy
+  jina: unhealthy (This operation was aborted)
   parasail: unhealthy (fetch failed)
   featherless: unhealthy (HTTP 404)
