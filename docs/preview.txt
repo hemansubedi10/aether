@@ -48,4 +48,4 @@ Provider health:
   nvidia: healthy
   jina: healthy
   parasail: unhealthy (fetch failed)
-  featherless: healthy
+  featherless: unhealthy (HTTP 404)
