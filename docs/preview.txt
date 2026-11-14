@@ -44,8 +44,8 @@ Provider health:
   gemini: unhealthy (HTTP 404)
   xai: unhealthy (HTTP 401)
   perplexity: unhealthy (HTTP 404)
-  cerebras: unhealthy (HTTP 403)
+  cerebras: unhealthy (HTTP 429)
   nvidia: healthy
   jina: healthy
   parasail: unhealthy (fetch failed)
-  featherless: unhealthy (HTTP 404)
+  featherless: healthy
